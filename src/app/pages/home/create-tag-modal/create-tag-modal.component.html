@@ -1,0 +1,27 @@
+<ng-template #demoModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Add/Edit Tag</h4>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      
+        <div class="form-group">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" [(ngModel)]="formTagName" id="tagName" placeholder="Tag Name"/>
+            <label for="tagName">Tag Name</label>
+          </div>
+          <div ngbDropdown class="d-inline-block">
+            <button type="button" class="btn btn-outline-primary" style="width: 100%;" id="dropdownBasic1" ngbDropdownToggle>
+              {{getFormTag(formTagCategory)}}
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+              <button *ngFor="let tag of tags" (click)="formTagCategory = tag.category" ngbDropdownItem>{{tag.displayName}}</button>
+            </div>
+          </div>
+        </div>
+      
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click'); saveTagtoTopic()">Save</button>
+    </div>
+  </ng-template>
