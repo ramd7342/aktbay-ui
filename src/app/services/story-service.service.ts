@@ -42,20 +42,14 @@ export class StoryService {
   }
 
   public deleteTopics(topic: any) : void {
-    console.log(topic.storyTitle);
-    let topics = [...this.topics.getValue()];
-    console.log(topics);
-    let index = topics.findIndex((m:any) => m.storyTitle === topic.storyTitle);
-    console.log(index);
-    let updatedTopics = topics.splice(index,1);
-    console.log(updatedTopics);
-    this.setTopics(updatedTopics);
+    this.topics.getValue().splice(this.topics.getValue().findIndex(m => m.storyTitle === topic.storyTitle),1);
   }
 
   public updateTopics(topic: any) : void {
-    let topics = [...this.topics.getValue()];
-    topics[topics.findIndex((m:any) => m.storyTitle === topic.storyTitle)] = topic;
-    this.setTopics(topics);
+  //  let topics = [...this.topics.getValue()];
+  //  topics[topics.findIndex((m:any) => m.storyTitle === topic.storyTitle)] = topic;
+    this.topics.getValue()[this.topics.getValue().findIndex((m:any) => m.storyTitle === topic.storyTitle)] = topic;
+  //  this.setTopics(topics);
   }
 
   private setTopics(topics:any): void {

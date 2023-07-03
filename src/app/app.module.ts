@@ -16,6 +16,7 @@ import { CreateTagModalComponent } from './pages/home/create-tag-modal/create-ta
 import { StoryService } from './services/story-service.service';
 import { AktbayTopicsComponent } from './pages/home/aktbay-topics/aktbay-topics.component';
 import { Utils } from './utils/Utils';
+import { AttachmentModalComponent } from './pages/home/attachment-modal/attachment-modal.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,7 +26,8 @@ import { Utils } from './utils/Utils';
     NavMenuComponent,
     AktbaySearchComponent,
     CreateTagModalComponent,
-    AktbayTopicsComponent
+    AktbayTopicsComponent,
+    AttachmentModalComponent
   ],
   imports: [
     BrowserModule,

@@ -4,7 +4,7 @@
     </div>
     <div class="card-body">
         <ul class="list-group">
-            <li class="list-group-item" *ngFor="let topic of (topics$ | async | summaryPipe:topicSummarySearchStr);let i = index" (click)="viewTopic(topic)">
+            <li class="list-group-item" *ngFor="let topic of (topics$ | async | summaryPipe:topicSummarySearchStr);let i = index">
               <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1" (click)="viewTopic(topic)">
               <span style="margin-left: 10px;" (click)="viewTopic(topic)">{{getEllipsisText(topic.storySummary)}}</span>
               <span class="float-end">

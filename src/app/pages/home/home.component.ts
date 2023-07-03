@@ -81,6 +81,10 @@ export class HomeComponent
     this.selectedDpr = "";
     this.selectedMonetization = "";
   }
+
+  public switchMode(event:any) {
+    this.form.enable();
+  }
  
   public getFormTag(category: any) {
     return this.tags.find(f => f.category===category)?.displayName || this.tags[0].displayName;
@@ -135,7 +139,10 @@ export class HomeComponent
     //Show image preview
     let reader = new FileReader();
     reader.onload = (event: any) => {
-      this.imageUrl.push(event.target.result);
+      this.topic$.subscribe(topic => {
+        topic.imageUrl.push(event.target.result);
+        this.storyService.setSelectedTopic(topic);
+      });
     }
     reader.readAsDataURL(this.fileToUpload);
   }

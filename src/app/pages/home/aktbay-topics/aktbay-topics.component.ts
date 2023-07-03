@@ -1,7 +1,8 @@
-import { Component, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { StoryService } from 'src/app/services/story-service.service';
 import { Utils } from 'src/app/utils/Utils';
+
 
 @Component({
   selector: 'app-aktbay-topics',
@@ -12,7 +13,8 @@ export class AktbayTopicsComponent {
   public topicSummarySearchStr : any;
   public topics$: Observable<any[]> = new Observable<any>();
 
-  
+  @Output() mode: EventEmitter<any> = new EventEmitter()
+
   constructor(private storyService: StoryService, private utils: Utils){
     this.topics$ = this.storyService.getTopics();
   }
@@ -22,7 +24,6 @@ export class AktbayTopicsComponent {
   }
 
   public viewTopic(topic:any): void {
-    console.log("viewTopic : ", topic);
     this.storyService.setSelectedTopic(topic);
   }
 

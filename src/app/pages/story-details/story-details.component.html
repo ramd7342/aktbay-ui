@@ -1,43 +1,42 @@
 <div class="row">
-    <div class="col-8"></div>
-    <div></div>
+    <div class="col-10">
+        <div (click)="selectedText = ''">
+            <div>
+                <b>Title: </b>
+                <p>{{topic?.storyTitle}}</p>
+            </div>
+            <div>
+                <b>Summary: </b>
+                <p>{{topic?.storySummary}}</p>
+            </div>
+            <div>
+                <b>Description: </b>
+                <div #eRef (contextmenu)="onContextMenu($event)" [innerHTML]="parsedTopicDescription"></div>
+            </div>
+            <div>
+                <b>Permissions: </b>
+                <p>{{topic?.storyPermissions}}</p>
+            </div>
+            <div>
+                <b>Output Template: </b>
+                <p>{{topic?.storyOutputTemplate}}</p>
+            </div>
+            <div>
+                <b>DPR: </b>
+                <p>{{topic?.storyDpr}}</p>
+            </div>
+            <div>
+                <b>Monetization: </b>
+                <p>{{topic?.storyMonetization}}</p>
+            </div>
+            <div>
+                <b>Tags: </b>
+                <span *ngFor="let tag of topic?.storyTags">{{tag.tagName}},</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-2"></div>
 </div>
-<div (click)="selectedText = ''">
-    <div>
-        <b>Title: </b>
-        <p>{{topic?.storyTitle}}</p>
-    </div>
-    <div>
-        <b>Summary: </b>
-        <p>{{topic?.storySummary}}</p>
-    </div>
-    <div>
-        <b>Description: </b>
-        <div #eRef (contextmenu)="onContextMenu($event)" [innerHTML]="parsedTopicDescription"></div>
-    </div>
-    <div>
-        <b>Permissions: </b>
-        <p>{{topic?.storyPermissions}}</p>
-    </div>
-    <div>
-        <b>Output Template: </b>
-        <p>{{topic?.storyOutputTemplate}}</p>
-    </div>
-    <div>
-        <b>DPR: </b>
-        <p>{{topic?.storyDpr}}</p>
-    </div>
-    <div>
-        <b>Monetization: </b>
-        <p>{{topic?.storyMonetization}}</p>
-    </div>
-    <div>
-        <b>Tags: </b>
-        <span *ngFor="let tag of topic?.storyTags">{{tag.tagName}},</span>
-    </div>
-</div>
-
-
 
 <ul #eRef class="list-group" *ngIf="selectedText.length > 0" style="position: fixed" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y">
     <li class="list-group-item" (click)="tagSelected()">Tag Selected Text</li>
