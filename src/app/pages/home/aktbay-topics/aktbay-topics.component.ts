@@ -29,6 +29,7 @@ export class AktbayTopicsComponent {
 
   public editTopic(topic:any): void {
     this.storyService.setSelectedTopic(topic);
+    this.mode.emit(true);
   }
 
   public deleteTopic (topic: any ): void

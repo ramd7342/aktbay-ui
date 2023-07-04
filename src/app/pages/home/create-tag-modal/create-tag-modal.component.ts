@@ -57,6 +57,5 @@ export class CreateTagModalComponent {
     } else {
       alert("Tag created already");
     }
-   // console.log(this.topics);
   }
 }

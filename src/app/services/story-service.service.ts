@@ -9,9 +9,7 @@ export class StoryService {
   private topics = new BehaviorSubject<any[]>([]);
   private selectedTopic = new BehaviorSubject<any>(null);
   constructor(private utils: Utils) { 
-    this.topics.subscribe((topicsData:any) => {
-      console.log("topicsData : ",topicsData);
-    })
+   
   }
 
   private extractTags ( topic: any )
@@ -48,7 +46,13 @@ export class StoryService {
   public updateTopics(topic: any) : void {
   //  let topics = [...this.topics.getValue()];
   //  topics[topics.findIndex((m:any) => m.storyTitle === topic.storyTitle)] = topic;
-    this.topics.getValue()[this.topics.getValue().findIndex((m:any) => m.storyTitle === topic.storyTitle)] = topic;
+    var t = this.topics.getValue()[this.topics.getValue().findIndex((m:any) => m.storyTitle === topic.storyTitle)];
+    //console.log(t);
+    t.storyTitle = topic.storyTitle;
+    t.storySummary = topic.storySummary;
+    t.storyDescription = topic.storyDescription;
+    //console.log(t);
+    this.topics.getValue()[this.topics.getValue().findIndex((m:any) => m.storyTitle === topic.storyTitle)] = t;
   //  this.setTopics(topics);
   }
 

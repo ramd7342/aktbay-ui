@@ -101,7 +101,6 @@ export class StoryDetailsComponent implements AfterViewInit, OnInit {
       })
     }
     this.parsedTopicDescription = this.sanitized.bypassSecurityTrustHtml(this.parsedTopicDescription);
-    //console.log(this.parsedTopicDescription);
     this.cdr.detectChanges();
   }
 }

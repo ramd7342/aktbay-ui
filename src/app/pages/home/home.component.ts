@@ -4,6 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DPR_ITEMS, MONETIZATION_ITEMS, OUTPUT_TEMPLATE_ITEMS, PERMISSION_ITEMS, SAMPLE_DESCRIPTION, TAGS } from '../../constants/constants';
 import { StoryService } from 'src/app/services/story-service.service';
 import { Observable } from 'rxjs';
+import { Utils } from 'src/app/utils/Utils';
 @Component( {
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -39,16 +40,17 @@ export class HomeComponent
   public showTagsModal = false;
   public showAttachmentModal = false;
 
-  
+  public editMode : boolean = false;
+
+  public topicData: any = null;
   public sampleDescription = SAMPLE_DESCRIPTION;
- 
-  constructor(private modalService: NgbModal,private formBuilder: FormBuilder, private storyService: StoryService)
+
+  constructor(private modalService: NgbModal,private formBuilder: FormBuilder,private utils: Utils, private storyService: StoryService)
   {
     this.selectedPermission = this.permissionItems[0];
     this.selectedOutputTemplate = this.outputTemplateItems[0];
     this.selectedDpr = this.dprItems[0];
     this.selectedMonetization = this.monetizationItems[0];
-
     this.form = this.formBuilder.group({
       storyTitle: ['Test Title', [Validators.min(5), Validators.required]],
       storySummary: ['Test Summary', [Validators.min(5), Validators.required]],
@@ -58,9 +60,9 @@ export class HomeComponent
     this.topic$ = this.storyService.getSelectedTopic();
     this.topic$.subscribe(topic => {
       if(topic) {
-        this.form.disable();
+        this.topicData = topic;
       } 
-    })
+    });
   }
 
   public createStory (): void
@@ -72,7 +74,6 @@ export class HomeComponent
       "storyDpr": this.selectedDpr,
       "storyMonetization": this.selectedMonetization
     }; 
-   // console.log(saveObj);
     this.storyService.addTopics(saveObj);
     this.form.reset();
     this.topicTags = [];
@@ -82,8 +83,19 @@ export class HomeComponent
     this.selectedMonetization = "";
   }
 
-  public switchMode(event:any) {
-    this.form.enable();
+  public switchMode(event:boolean) {
+    this.editMode = event;
+    this.topic$.subscribe((topic:any) => {
+      this.form.get("storyTitle")?.setValue(topic.storyTitle);
+      this.form.get("storySummary")?.setValue(topic.storySummary);
+      this.form.get("storyDescription")?.setValue(topic.storyDescription);
+      this.selectedPermission = topic.storyPermissions;
+      this.selectedOutputTemplate = topic.storyOutputTemplate;
+      this.selectedDpr = topic.storyDpr;
+      this.selectedMonetization = topic.storyMonetization;
+      this.form.enable();
+    })
+    
   }
  
   public getFormTag(category: any) {
@@ -96,7 +108,6 @@ export class HomeComponent
   }
 
   public addNewTag(newTag:any) {
-    //console.log(newTag);
     this.topicTags.push( { tagName: newTag, tagCategory: "other", tagClass: this.getRandomButton() } );
   }
 
@@ -161,21 +172,19 @@ export class HomeComponent
 
   public editTopic (): void
   {
-    this.topic$.subscribe(topic => {
       this.form.enable();
-      this.setValuesOnForm(topic);
-      this.storyService.setSelectedTopic(topic);
-    });
+      this.setValuesOnForm(this.topicData);
+      this.editMode = true;
+      this.storyService.setSelectedTopic(this.topicData);
   }
 
   public deleteTopic (): void
   {
-    this.topic$.subscribe(topic => {
       this.form.enable();
       this.form.reset();
-      this.setValuesOnForm(topic);
-      this.storyService.deleteTopics(topic);
-    });
+     // this.setValuesOnForm(topic);
+      this.storyService.deleteTopics(this.topicData);
+      this.storyService.setSelectedTopic(null);
     
     
   }
@@ -199,6 +208,8 @@ export class HomeComponent
   public saveEditedStory(): void {
     this.storyService.updateTopics(this.form.getRawValue());
     this.form.reset();
+    this.editMode = false;
+    this.storyService.setSelectedTopic(null);
   }
 
   

@@ -13,7 +13,7 @@
                     <span *ngIf="form.disabled">Story Details</span>
                 </div>
                 <div class="card-body">
-                  <div *ngIf="!(topic$ | async)" class="row">
+                  <div *ngIf="!(topic$ | async) || editMode" class="row">
                     <div class="col-9">
                       <form [formGroup]="form">
                         <div class="form-floating mb-3">
@@ -116,15 +116,15 @@
                     
                     </div>
                   </div>
-                  <div *ngIf="(topic$ | async)">
+                  <div *ngIf="(topic$ | async) && !editMode">
                     <app-story-details (newTag)="addNewTag($event)" [topic]="(topic$ | async)"></app-story-details>
                   </div>
                 </div>
                 <div class="card-footer">
-                    <a href="javascript:void(0)" *ngIf="!(topic$ | async)  && form.enabled" class="btn btn-success float-end" (click)="createStory()">Create Story & Add Tags to the story</a>
-                    <a href="javascript:void(0)" *ngIf="(topic$ | async) && form.enabled" class="btn btn-success float-end" (click)="saveEditedStory()">Save My Story</a>
-                    <a href="javascript:void(0)" *ngIf="form.disabled" class="btn btn-success float-end" (click)="editTopic()">Edit My Story</a>
-                    <a href="javascript:void(0)" style="margin-right: 5px;" *ngIf="form.disabled" class="btn btn-danger float-end" (click)="deleteTopic()">Delete My Story</a>
+                    <a href="javascript:void(0)" *ngIf="!(topic$ | async)  && !editMode" class="btn btn-success float-end" (click)="createStory()">Create Story & Add Tags to the story</a>
+                    <a href="javascript:void(0)" *ngIf="(topic$ | async) && editMode" class="btn btn-success float-end" (click)="saveEditedStory()">Save My Story</a>
+                    <a href="javascript:void(0)" *ngIf="(topic$ | async) && !editMode" class="btn btn-success float-end" (click)="editTopic()">Edit My Story</a>
+                    <a href="javascript:void(0)" style="margin-right: 5px;" *ngIf="(topic$ | async) && !editMode" class="btn btn-danger float-end" (click)="deleteTopic()">Delete My Story</a>
                 </div>
             </div>
       </div>
