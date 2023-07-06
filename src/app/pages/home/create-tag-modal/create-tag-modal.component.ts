@@ -26,14 +26,7 @@ export class CreateTagModalComponent {
 
   constructor(private modalService: NgbModal, private utils: Utils, private storyService: StoryService) {
     this.formTagCategory = this.tags[0].category;
-    this.open(this.demoModal, null);
-    this.topics$.subscribe(data => {
-      this.topics = data;
-    })
-
-    this.storyService.getSelectedTopic().subscribe((topic:any) => {
-      this.topic = topic;
-    });
+    setTimeout(()=> {this.open(this.demoModal, null)},10);
   }
 
   public open ( modal: any, tag: any ): void

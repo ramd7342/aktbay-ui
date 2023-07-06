@@ -8,6 +8,7 @@
       <div class="col-9">
           <div class="card" style="height: 100%;">
                 <div class="card-header">
+                    <button class="btn btn-success float-end" (click)="newTopic()">New Topic</button>
                     <span *ngIf="(topic$ | async) && form.enabled">Edit Story</span>
                     <span *ngIf="!(topic$ | async) && form.enabled">Create Story</span>
                     <span *ngIf="form.disabled">Story Details</span>
@@ -117,7 +118,7 @@
                     </div>
                   </div>
                   <div *ngIf="(topic$ | async) && !editMode">
-                    <app-story-details (newTag)="addNewTag($event)" [topic]="(topic$ | async)"></app-story-details>
+                    <app-story-details></app-story-details>
                   </div>
                 </div>
                 <div class="card-footer">
@@ -134,4 +135,4 @@
 
   <app-create-tag-modal *ngIf="showTagsModal"></app-create-tag-modal>
 
-  <app-attachment-modal *ngIf="showAttachmentModal"></app-attachment-modal>
+  <app-attachment-modal *ngIf="showAttachmentModal" [imageUrl]="imageUrl"></app-attachment-modal>

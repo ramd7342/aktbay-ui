@@ -17,7 +17,7 @@ export const MONETIZATION_ITEMS = ["Paid - Ad","Paid - Subscription","Public - F
 // public sampleDescription = `Test place with #place#, Test food with @food@, Test hotel with $hotel$`;
 export const SAMPLE_DESCRIPTION = `Day 1:  
 Breakfast :  
-  Start your day with a traditional South Indian Breakfast at #MTR# (Mavalli Tiffin Room) in LalBagh. Try thier Signature dish, Rava Idli, and filter coffee.
+  Start your day with a traditional South Indian Breakfast at @MTR@ (Mavalli Tiffin Room) in LalBagh. Try thier Signature dish, Rava Idli, and filter coffee.
 Lunch:  
   Head to Nagarjuna Inn Residency Road for some spicy #Andhra-style biryani# and chicken fry.
 Dinner: 

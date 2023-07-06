@@ -1,5 +1,5 @@
-<div class="row">
-    <div class="col-10">
+<div class="row" *ngIf="topic">
+    <div class="col-8">
         <div (click)="selectedText = ''">
             <div>
                 <b>Title: </b>
@@ -35,7 +35,15 @@
             </div>
         </div>
     </div>
-    <div class="col-2"></div>
+    <div class="col-4">
+            <div class="tag-boundary" >
+                <button cdkDrag cdkDragBoundary=".tag-boundary" *ngFor="let tag of topic?.storyTags" type="button" [ngClass]="tag.tagClass">
+                  <i [ngClass]="getTagIcon(tag.tagCategory)"></i>
+                  <span> {{tag.tagName}} </span>
+                  <i class="bi bi-pencil"></i>
+                </button>
+            </div>
+    </div>
 </div>
 
 <ul #eRef class="list-group" *ngIf="selectedText.length > 0" style="position: fixed" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y">

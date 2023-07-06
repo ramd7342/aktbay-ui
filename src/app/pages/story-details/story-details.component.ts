@@ -1,37 +1,48 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-
+import { TAGS } from '../../constants/constants';
+import { Utils } from 'src/app/utils/Utils';
+import { StoryService } from 'src/app/services/story-service.service';
 @Component({
   selector: 'app-story-details',
   templateUrl: './story-details.component.html',
   styleUrls: ['./story-details.component.scss']
 })
-export class StoryDetailsComponent implements AfterViewInit, OnInit {
-
-  @Input()
-  public topic: any;
-
-  @Output() newTag: EventEmitter<any> = new EventEmitter()
+export class StoryDetailsComponent implements OnInit {
 
   @ViewChild('eRef') public eRef: any;
- 
+
   public isDisplayContextMenu: boolean = false;
   public rightClickMenuItems: Array<any> = [];
   public rightClickMenuPositionX: number = 0;
   public rightClickMenuPositionY: number = 0;
   public selectedText: any = "";
   public parsedTopicDescription: any = null;
-  public tags = [ 
-    {tagRegex: /\#(.*?)\#/gm, category: "country"},
-    {tagRegex: /\@(.*?)\@/gm, category: "food"},
-    {tagRegex: /\$(.*?)\$/gm, category: "hotel"}
-   ];
-   contextMenuPosition = { x: '0px', y: '0px' };
-  constructor(private cdr: ChangeDetectorRef, private sanitized: DomSanitizer) {
-  
+  public contextMenuPosition = { x: '0px', y: '0px' };
+  public topic: any = null;
+
+  constructor(private cdr: ChangeDetectorRef, private sanitized: DomSanitizer, private utils: Utils, private storyService: StoryService) {
+    setTimeout(()=>{this.getTopicDetails()},10);
   }
 
   
+  private getTopicDetails ()
+  {
+    this.storyService.getSelectedTopic().subscribe( ( topic: any ) =>
+    {
+      this.topic = topic;
+      this.parsedTopicDescription = topic?.storyDescription;
+      if ( topic?.storyDescription )
+      {
+        TAGS.forEach( ( tag: any ) =>
+        {
+          this.extractTags( topic.storyDescription, tag.tagRegex, tag.category );
+        } );
+      }
+      this.parsedTopicDescription = this.sanitized.bypassSecurityTrustHtml( this.parsedTopicDescription );
+    } );
+  }
+
   onContextMenu(event: MouseEvent) {
     event.preventDefault();
     this.selectedText = window?.getSelection()?.toString();
@@ -41,8 +52,11 @@ export class StoryDetailsComponent implements AfterViewInit, OnInit {
 
   public tagSelected(): void {
     this.eRef.nativeElement.innerHTML = this.eRef.nativeElement.innerHTML.replace(this.selectedText, `<span style='background-color:#00FF00'>${this.selectedText}</span>`);
-    this.newTag.emit(this.selectedText);
+   // this.newTag.emit(this.selectedText);
+    this.topic.storyTags.push({ tagName: this.selectedText, tagCategory: "other", tagClass: this.utils.getRandomButton() });
+    this.storyService.setSelectedTopic(this.topic);
     this.selectedText = "";
+    
     //  this.parsedTopicDescription.replace(this.selectedText, `<span style="background:#FFFF00"> ${this.selectedText} </span>`)
   }
 
@@ -64,6 +78,9 @@ export class StoryDetailsComponent implements AfterViewInit, OnInit {
       case "hotel": 
         iconClass = "bi bi-shop";
         break; 
+      case "other": 
+        iconClass = "bi bi-shuffle";
+        break;
       default: 
         iconClass = ""
         break
@@ -89,18 +106,7 @@ export class StoryDetailsComponent implements AfterViewInit, OnInit {
 
   ngOnInit (): void
   {
-    
+    this.parsedTopicDescription = "";
   }
 
-  ngAfterViewInit (): void
-  {
-    this.parsedTopicDescription = this.topic?.storyDescription;
-    if(this.topic?.storyDescription) {
-      this.tags.forEach((tag:any)=>{
-        this.extractTags( this.topic.storyDescription, tag.tagRegex, tag.category );
-      })
-    }
-    this.parsedTopicDescription = this.sanitized.bypassSecurityTrustHtml(this.parsedTopicDescription);
-    this.cdr.detectChanges();
-  }
 }

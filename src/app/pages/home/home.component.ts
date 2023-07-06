@@ -56,11 +56,12 @@ export class HomeComponent
       storySummary: ['Test Summary', [Validators.min(5), Validators.required]],
       storyDescription: [this.sampleDescription, [Validators.min(5), Validators.required]],
     });
-    
+    this.topicTags = this.utils.extractTags(this.form.getRawValue())
     this.topic$ = this.storyService.getSelectedTopic();
     this.topic$.subscribe(topic => {
       if(topic) {
         this.topicData = topic;
+        this.topicData.imageUrl = this.topicData?.imageUrl ? this.topicData.imageUrl : [];
       } 
     });
   }
@@ -72,7 +73,7 @@ export class HomeComponent
       "storyPermissions": this.selectedPermission, 
       "storyOutputTemplate": this.selectedOutputTemplate,
       "storyDpr": this.selectedDpr,
-      "storyMonetization": this.selectedMonetization
+      "storyMonetization": this.selectedMonetization, 
     }; 
     this.storyService.addTopics(saveObj);
     this.form.reset();
@@ -150,11 +151,10 @@ export class HomeComponent
     //Show image preview
     let reader = new FileReader();
     reader.onload = (event: any) => {
-      this.topic$.subscribe(topic => {
-        topic.imageUrl.push(event.target.result);
-        this.storyService.setSelectedTopic(topic);
-      });
+      this.imageUrl.push(event.target.result);
+     // this.storyService.setSelectedTopic({...this.topicData, imageUrl});
     }
+    //this.editMode = false;
     reader.readAsDataURL(this.fileToUpload);
   }
 
@@ -203,6 +203,13 @@ export class HomeComponent
     this.currentTopicIndex = index;
   }*/
 
+
+  public newTopic(): void {
+    this.editMode = false;
+    this.form.reset();
+    this.storyService.setSelectedTopic(null);
+    this.topicTags = [];
+  }
   
 
   public saveEditedStory(): void {
@@ -210,6 +217,7 @@ export class HomeComponent
     this.form.reset();
     this.editMode = false;
     this.storyService.setSelectedTopic(null);
+    this.topicTags = [];
   }
 
   

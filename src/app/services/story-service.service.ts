@@ -26,7 +26,7 @@ export class StoryService {
           }
           return null;
         }).filter((m:any) => m);
-        topicTags = [...matchess]
+        topicTags.push(...matchess)
       }
     })
     return topicTags;
