@@ -1,4 +1,6 @@
-export const TAGS = [ 
+import { ITagRegex } from "../models/ITag";
+
+export const TAGS: Array<ITagRegex> = [ 
     {tagRegex: /\@(.*?)\@/gm, category: "country", displayName: "Place"},
     {tagRegex: /\#(.*?)\#/gm, category: "food", displayName: "Food"},
     {tagRegex: /\$(.*?)\$/gm, category: "hotel", displayName: "Hotel"}
@@ -6,16 +8,16 @@ export const TAGS = [
 
 export const MAX_TEXT_LENGTH: number = 28;
 
-export const PERMISSION_ITEMS = ["Public","Private","Shared"];
+export const PERMISSION_ITEMS : Array<string> = ["Public","Private","Shared"];
 
-export const OUTPUT_TEMPLATE_ITEMS = ["Default","Timeline","Quiz","Survey","Ad"];
+export const OUTPUT_TEMPLATE_ITEMS : Array<string> = ["Default","Timeline","Quiz","Survey","Ad"];
 
-export const DPR_ITEMS = ["Yes (public)","No (public)"];
+export const DPR_ITEMS : Array<string> = ["Yes (public)","No (public)"];
 
-export const MONETIZATION_ITEMS = ["Paid - Ad","Paid - Subscription","Public - Free"];
+export const MONETIZATION_ITEMS : Array<string> = ["Paid - Ad","Paid - Subscription","Public - Free"];
 
-//  public sampleDescription = `Test place with #place#, Test food with @food@, Test hotel with $hotel$`;
-export const SAMPLE_DESCRIPTION = `Day 1:  
+// public sampleDescription = `Test place with #place#, Test food with @food@, Test hotel with $hotel$`;
+export const SAMPLE_DESCRIPTION : string= `Day 1:  
 Breakfast :  
   Start your day with a traditional South Indian Breakfast at @MTR@ (Mavalli Tiffin Room) in LalBagh. Try thier Signature dish, Rava Idli, and filter coffee.
 Lunch:  

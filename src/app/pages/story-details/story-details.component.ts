@@ -1,16 +1,20 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TAGS } from '../../constants/constants';
 import { Utils } from 'src/app/utils/Utils';
 import { StoryService } from 'src/app/services/story-service.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AttachmentModalComponent } from '../home/attachment-modal/attachment-modal.component';
 @Component({
   selector: 'app-story-details',
   templateUrl: './story-details.component.html',
   styleUrls: ['./story-details.component.scss']
 })
-export class StoryDetailsComponent implements OnInit {
+export class StoryDetailsComponent implements OnInit, OnChanges {
 
   @ViewChild('eRef') public eRef: any;
+
+  @Input() public topic: any;
 
   public isDisplayContextMenu: boolean = false;
   public rightClickMenuItems: Array<any> = [];
@@ -19,28 +23,44 @@ export class StoryDetailsComponent implements OnInit {
   public selectedText: any = "";
   public parsedTopicDescription: any = null;
   public contextMenuPosition = { x: '0px', y: '0px' };
-  public topic: any = null;
-
-  constructor(private cdr: ChangeDetectorRef, private sanitized: DomSanitizer, private utils: Utils, private storyService: StoryService) {
-    setTimeout(()=>{this.getTopicDetails()},10);
+  
+  constructor(private modalService: NgbModal,private cdr: ChangeDetectorRef, private sanitized: DomSanitizer, private utils: Utils, private storyService: StoryService) {
+    console.log("constructor call");
   }
 
-  
-  private getTopicDetails ()
+  ngOnInit (): void
   {
-    this.storyService.getSelectedTopic().subscribe( ( topic: any ) =>
-    {
-      this.topic = topic;
-      this.parsedTopicDescription = topic?.storyDescription;
-      if ( topic?.storyDescription )
+   // console.log("ngOninit call ");
+   // this.parsedTopicDescription = "";
+   // this.getTopicDataDetails();
+  }
+
+  ngOnChanges() {
+    this.parsedTopicDescription = "";
+    this.getTopicDataDetails();
+  }
+
+  private getTopicDataDetails ()
+  {
+     this.parsedTopicDescription = this.topic?.storyDescription;
+      if ( this.topic?.storyDescription )
       {
         TAGS.forEach( ( tag: any ) =>
         {
-          this.extractTags( topic.storyDescription, tag.tagRegex, tag.category );
+          this.extractTags( this.topic.storyDescription, tag.tagRegex, tag.category );
         } );
       }
       this.parsedTopicDescription = this.sanitized.bypassSecurityTrustHtml( this.parsedTopicDescription );
-    } );
+  }
+
+  public showAttachmentModal(item:any): void {
+    const modalRef = this.modalService.open(AttachmentModalComponent, {backdrop: 'static',size: 'lg', windowClass : "myCustomModalClass", centered: true});
+    modalRef.componentInstance.storyImageUrl = [item];
+    modalRef.result.then((result) => {
+      //console.log(result);
+    }).catch((error) => {
+      //console.log(error);
+    });
   }
 
   onContextMenu(event: MouseEvent) {
@@ -51,13 +71,13 @@ export class StoryDetailsComponent implements OnInit {
   }
 
   public tagSelected(): void {
-    this.eRef.nativeElement.innerHTML = this.eRef.nativeElement.innerHTML.replace(this.selectedText, `<span style='background-color:#00FF00'>${this.selectedText}</span>`);
-   // this.newTag.emit(this.selectedText);
+    this.eRef.nativeElement.innerHTML = this.eRef.nativeElement.innerHTML.replace(this.selectedText, `<span style='background-color:#65cbf2'>${this.selectedText}</span>`);
+    // this.newTag.emit(this.selectedText);
     this.topic.storyTags.push({ tagName: this.selectedText, tagCategory: "other", tagClass: this.utils.getRandomButton() });
-    this.storyService.setSelectedTopic(this.topic);
+    this.storyService.updateTopics(this.topic);
     this.selectedText = "";
     
-    //  this.parsedTopicDescription.replace(this.selectedText, `<span style="background:#FFFF00"> ${this.selectedText} </span>`)
+    //this.parsedTopicDescription = this.parsedTopicDescription.replace(this.selectedText, `<span style="background:#FFFF00"> ${this.selectedText} </span>`)
   }
 
   public getTagIcon(category: string) : string{
@@ -97,16 +117,13 @@ export class StoryDetailsComponent implements OnInit {
         var matchTag = match.substring( 1, match.length - 1 );
         var index = this.parsedTopicDescription.indexOf(match);
         this.parsedTopicDescription = this.parsedTopicDescription.replace(match, "");
-        var tagElement = this.topic.storyTags.find((storyTag: any)=> storyTag.tagName === matchTag)
-        var replacement = `<span style='background-color:#00FF00'> ${tagElement.tagName} </span>`;
-         this.parsedTopicDescription = this.parsedTopicDescription.substring(0, index) + replacement + this.parsedTopicDescription.substring(index)
+        var tagElement = this.topic.storyTags.find((storyTag: any)=> storyTag.tagName === matchTag);
+        var replacement = tagElement ? `<span style='background-color:#65cbf2'> ${tagElement.tagName} </span>` : ``;
+        this.parsedTopicDescription = this.parsedTopicDescription.substring(0, index) + replacement + this.parsedTopicDescription.substring(index)
       } );
     }
   }
 
-  ngOnInit (): void
-  {
-    this.parsedTopicDescription = "";
-  }
+  
 
 }

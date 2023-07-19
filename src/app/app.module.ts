@@ -17,6 +17,8 @@ import { StoryService } from './services/story-service.service';
 import { AktbayTopicsComponent } from './pages/home/aktbay-topics/aktbay-topics.component';
 import { Utils } from './utils/Utils';
 import { AttachmentModalComponent } from './pages/home/attachment-modal/attachment-modal.component';
+import { CreateTopicModalComponent } from './pages/create-topic-modal/create-topic-modal.component';
+import { AktbayTopicsViewComponent } from './pages/home/aktbay-topics-view/aktbay-topics-view.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,7 +29,9 @@ import { AttachmentModalComponent } from './pages/home/attachment-modal/attachme
     AktbaySearchComponent,
     CreateTagModalComponent,
     AktbayTopicsComponent,
-    AttachmentModalComponent
+    AttachmentModalComponent,
+    CreateTopicModalComponent,
+    AktbayTopicsViewComponent
   ],
   imports: [
     BrowserModule,
@@ -39,6 +43,7 @@ import { AttachmentModalComponent } from './pages/home/attachment-modal/attachme
     DragDropModule,
     NgbTooltipModule
   ],
+  entryComponents: [CreateTagModalComponent, AttachmentModalComponent, CreateTopicModalComponent],
   providers: [StoryService, Utils],
   bootstrap: [AppComponent],
 })

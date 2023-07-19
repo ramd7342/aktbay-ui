@@ -1,0 +1,10 @@
+ngb-modal-window {
+    background-color: black;
+    .modal-dialog {
+        max-width: 90% !important;
+    }
+}
+
+::ng-deep .myCustomModalClass .modal-dialog{
+    max-width: 90% !important;
+}

@@ -44,7 +44,7 @@ export class CreateTagModalComponent {
   }
 
   public saveTagtoTopic(): void {
-    let story = this.topics[this.topics.findIndex((m:any) => m.storyTitle === this.topic.storyTitle)];
+    let story = this.topics[this.topics.findIndex((m:any) => m.storyId === this.topic.storyId)];
     if(story.storyTags.findIndex((m:any) => m.tagName === this.formTagName) < 0) {
       story.storyTags.push({ tagName: this.formTagName, tagCategory: this.formTagCategory, tagClass: this.utils.getRandomButton() });
     } else {

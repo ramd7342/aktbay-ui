@@ -1,17 +1,44 @@
-<div class="card" style="height: 100%;">
-    <div class="card-header">
-      <input class="form-control me-2" [(ngModel)]="topicSummarySearchStr" type="search" placeholder="Search" aria-label="Search">
+
+<div class="row float-end">
+  <div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" [checked]="curView" (click)="switchView()">
+    <label class="form-check-label" for="flexSwitchCheckChecked">Accordion View</label>
+  </div>
+</div>
+<!-- <span>{{curView}}</span> -->
+<div class="row">
+  <div class="accordion" *ngIf="curView" id="topicsAccordion">
+    <div *ngIf="topics?.length <= 0">No Topics to display</div>
+    <div class="accordion-item" *ngFor="let topic of topics;let i = index">
+      <h2 class="accordion-header" [attr.id]="'topic' + i">
+        <button [ngClass]="selectedTopicIndex === i ? 'accordion-button' : 'accordion-button collapsed'" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse'+i" aria-expanded="true" [attr.aria-controls]="'collapse'+i" (click)="selectedTopicIndex = i">
+          <span class="topicTitle">{{topic.storyTitle}}</span>
+          <span class="topicActions float-end">
+            <i class="bi bi-trash m-1" (click)="deleteTopic(topic)"></i>
+            <i class="bi bi-pencil m-1" (click)="editTopic(topic)"></i>
+          </span>
+        </button>
+      </h2>
+      <div [attr.id]="'collapse'+i" [ngClass]="selectedTopicIndex === i ? 'accordion-collapse collapse show' : 'accordion-collapse collapse'" [attr.aria-labelledby]="'topic'+i" data-bs-parent="#topicsAccordion">
+        <div class="accordion-body">
+          <app-story-details [topic]="topic"></app-story-details>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
-        <ul class="list-group">
-            <li class="list-group-item" *ngFor="let topic of (topics$ | async | summaryPipe:topicSummarySearchStr);let i = index">
-              <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1" (click)="viewTopic(topic)">
-              <span style="margin-left: 10px;" (click)="viewTopic(topic)">{{getEllipsisText(topic.storySummary)}}</span>
-              <span class="float-end">
-                <i class="bi bi-trash m-1" (click)="deleteTopic(topic)"></i>
-                <i class="bi bi-pencil m-1" (click)="editTopic(topic)"></i>
-              </span>
-            </li>
-        </ul>
+  </div>
+  <div *ngIf="!curView" id="cardView"> 
+    <div *ngIf="topics?.length <= 0">No Topics to display</div>
+    <div class="row">
+      <div class="col-3" *ngFor="let topic of topics;let i = index">
+        <div class="card" style="width: 18rem;">
+          <img [src]="topic?.storyImageUrl[0]?.url || '../../../../assets/travelnotes.png'" class="card-img-top storycardimg" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{topic.storyTitle}}</h5>
+            <p class="card-text">{{topic.storySummary}}</p>
+            <a href="javascript:void(0)" class="btn btn-primary" (click)="readStory(topic)">Read more</a>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

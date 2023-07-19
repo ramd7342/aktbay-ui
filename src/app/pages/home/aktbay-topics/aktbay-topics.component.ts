@@ -1,7 +1,11 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
+import { IStory } from 'src/app/models/IStory';
 import { StoryService } from 'src/app/services/story-service.service';
 import { Utils } from 'src/app/utils/Utils';
+import { CreateTopicModalComponent } from '../../create-topic-modal/create-topic-modal.component';
+import { StoryDetailsComponent } from '../../story-details/story-details.component';
 
 
 @Component({
@@ -9,27 +13,48 @@ import { Utils } from 'src/app/utils/Utils';
   templateUrl: './aktbay-topics.component.html',
   styleUrls: ['./aktbay-topics.component.scss']
 })
-export class AktbayTopicsComponent {
+export class AktbayTopicsComponent implements OnInit, OnChanges {
   public topicSummarySearchStr : any;
-  public topics$: Observable<any[]> = new Observable<any>();
+  @Input() public topics: any;
+  public selectedTopicIndex: number = -1;
+  public curView: boolean = false;
+  
+  constructor(private modalService: NgbModal,private storyService: StoryService, private utils: Utils){ 
+  }
 
-  @Output() mode: EventEmitter<any> = new EventEmitter()
+  public ngOnInit(): void {
+   
+  }
 
-  constructor(private storyService: StoryService, private utils: Utils){
-    this.topics$ = this.storyService.getTopics();
+  ngOnChanges(): void {
+    this.selectedTopicIndex = -1;
+  }
+
+  public switchView() {
+    this.curView = !this.curView
   }
 
   public getEllipsisText(storySummary: string) {
     return this.utils.getEllipsisText(storySummary);
   }
 
-  public viewTopic(topic:any): void {
-    this.storyService.setSelectedTopic(topic);
+  public readStory(topic:any): void {
+    this.modalService.open( StoryDetailsComponent, {backdrop: 'static',size: 'lg', windowClass : "myCustomModalClass", centered: true}).componentInstance.topic = topic;
   }
 
-  public editTopic(topic:any): void {
-    this.storyService.setSelectedTopic(topic);
-    this.mode.emit(true);
+  public viewTopic(story:any): void {
+    this.storyService.setSelectedTopic(story);
+  }
+
+  public editTopic(story:any): void {
+    const modalRef = this.modalService.open(CreateTopicModalComponent, {backdrop: 'static',size: 'lg', windowClass : "myCustomModalClass", centered: true});
+    modalRef.componentInstance.story = story;
+    modalRef.result.then((result) => {
+      //console.log(result);
+    }).catch((error) => {
+     // console.log(error);
+    });
+    this.storyService.setSelectedTopic(story);
   }
 
   public deleteTopic (topic: any ): void

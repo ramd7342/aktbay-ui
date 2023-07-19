@@ -1,0 +1,115 @@
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add Story</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <form [formGroup]="form">
+                <div class="form-floating mb-3">
+                    <input type="text" formControlName="storyTitle" class="form-control" id="storyTitle"
+                        placeholder="Story Title" />
+                    <label for="storyTitle">Title/Prompt</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" formControlName="storySummary" class="form-control" id="storySummary"
+                        placeholder="Story Summary" />
+                    <label for="storySummary">Short Summary</label>
+                </div>
+                <div class="row mb-3 dropdownsDiv">
+                    <div class="col-3">
+                        <div class="dropdown">
+                            <div>Permissions</div>
+                            <button class="btn btn-primary dropdown-toggle"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{selectedPermission || "Permissions"}}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li *ngFor="let permissionItem of permissionItems"
+                                    (click)="selectedPermission = permissionItem"><a class="dropdown-item"
+                                        href="javascript:void(0)">{{permissionItem}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="dropdown">
+                            <div>Output Templates</div>
+                            <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                {{selectedOutputTemplate || "Output Templates"}}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li *ngFor="let outputTemplateItem of outputTemplateItems"
+                                    (click)="selectedOutputTemplate = outputTemplateItem"><a class="dropdown-item"
+                                        href="javascript:void(0)">{{outputTemplateItem}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="dropdown">
+                            <div>Allow DPRs?</div>
+                            <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                {{selectedDpr || "Allow DPRs?"}}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li *ngFor="let dprItem of dprItems" (click)="selectedDpr = dprItem"><a
+                                        class="dropdown-item" href="javascript:void(0)">{{dprItem}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="dropdown">
+                            <div>Monetization</div>
+                            <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                {{selectedMonetization || "Monetization"}}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li *ngFor="let monetizationItem of monetizationItems"
+                                    (click)="selectedMonetization = monetizationItem"><a class="dropdown-item"
+                                        href="javascript:void(0)">{{monetizationItem}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea formControlName="storyDescription" class="form-control" placeholder="Story Description"
+                        id="storyDescription" style="height: 350px"></textarea>
+                    <label for="storyDescription">Description</label>
+                </div>
+            </form>   
+        </div> 
+        <div>
+            <h6>TAGS : </h6>
+            <div class="row tagsDiv">
+                <div class="col-10">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" [(ngModel)]="newTagName" aria-label="Text input with dropdown button">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{newTagCategory || "Select Category"}}</button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li *ngFor="let tag of tags" ><a class="dropdown-item" href="javascript:void(0)" (click)="newTagCategory = tag.category">{{tag.displayName}}</a></li>
+                        </ul> 
+                    </div>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-success" (click)="addTag()">Add Tag</button>
+                </div>
+            </div>
+            <span class="badge bg-danger m-2" *ngFor="let tag of storyTags" >{{tag.tagName}} <i class="bi bi-x-circle-fill" (click)="deleteTag(tag)"></i></span>
+        </div>
+        <div>
+            <h6>Attachments : </h6>
+            <label class="btn btn-default">
+                <i class="upload bi bi-cloud-upload"></i> <input type="file" hidden (change)="handleFileInput($event)">
+            </label>
+            <span class="badge bg-primary m-2" *ngFor="let tag of imageUrl" >{{tag.name}} <i class="bi bi-x-circle-fill" (click)="deleteImage(tag)"></i></span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button *ngIf="!story?.storyId" type="button" class="btn btn-outline-dark"
+            (click)="createStory()">Add Story</button>
+        <button *ngIf="story?.storyId" type="button" class="btn btn-outline-dark"
+            (click)="updateStory()">Update Story</button>
+    </div>
+

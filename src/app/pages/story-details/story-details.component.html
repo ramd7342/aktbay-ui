@@ -1,5 +1,5 @@
-<div class="row" *ngIf="topic">
-    <div class="col-8">
+<div class="row m-3" *ngIf="topic">
+    <div class="col">
         <div (click)="selectedText = ''">
             <div>
                 <b>Title: </b>
@@ -13,41 +13,68 @@
                 <b>Description: </b>
                 <div #eRef (contextmenu)="onContextMenu($event)" [innerHTML]="parsedTopicDescription"></div>
             </div>
-            <div>
-                <b>Permissions: </b>
-                <p>{{topic?.storyPermissions}}</p>
-            </div>
-            <div>
-                <b>Output Template: </b>
-                <p>{{topic?.storyOutputTemplate}}</p>
-            </div>
-            <div>
-                <b>DPR: </b>
-                <p>{{topic?.storyDpr}}</p>
-            </div>
-            <div>
-                <b>Monetization: </b>
-                <p>{{topic?.storyMonetization}}</p>
+            <div class="row">
+                <div class="col-3">
+                    <div>
+                        <b>Story Created Date: </b>
+                        <p>{{topic?.storyCreatedDate}}</p>
+                    </div>
+                    <div>
+                        <b>Story Created By: </b>
+                        <p>{{topic?.storyCreatedBy}}</p>
+                    </div>
+                    <div>
+                        <b>Story Updated Date: </b>
+                        <p>{{topic?.storyUpdatedDate}}</p>
+                    </div>
+                    <div>
+                        <b>Story Updated By: </b>
+                        <p>{{topic?.storyUpdatedBy}}</p>
+                    </div>
+                    <div>
+                        <b>Permissions: </b>
+                        <p>{{topic?.storyPermissions}}</p>
+                    </div>
+                    <div>
+                        <b>Output Template: </b>
+                        <p>{{topic?.storyOutputTemplate}}</p>
+                    </div>
+                    <div>
+                        <b>DPR: </b>
+                        <p>{{topic?.storyDpr}}</p>
+                    </div>
+                    <div>
+                        <b>Monetization: </b>
+                        <p>{{topic?.storyMonetization}}</p>
+                    </div>
+
+                </div>
+                <div class="col-9">
+                    <b>Attachments: </b>
+                    <div class="row">
+                        <img *ngFor="let item of topic?.storyImageUrl" [src]="item.url" class="img-thumbnail attachmentsImg m-1" alt="..."
+                            (click)="showAttachmentModal(item)" />
+                    </div>   
+                </div>
             </div>
             <div>
                 <b>Tags: </b>
-                <span *ngFor="let tag of topic?.storyTags">{{tag.tagName}},</span>
+                <span class="badge bg-info m-2" cdkDrag cdkDragBoundary=".tag-boundary"
+                    *ngFor="let tag of topic?.storyTags" type="button">
+                    <i [ngClass]="getTagIcon(tag.tagCategory)"></i>
+                    <span> {{tag.tagName}} </span>
+                    <i class="bi bi-pencil"></i>
+                </span>
             </div>
         </div>
     </div>
-    <div class="col-4">
-            <div class="tag-boundary" >
-                <button cdkDrag cdkDragBoundary=".tag-boundary" *ngFor="let tag of topic?.storyTags" type="button" [ngClass]="tag.tagClass">
-                  <i [ngClass]="getTagIcon(tag.tagCategory)"></i>
-                  <span> {{tag.tagName}} </span>
-                  <i class="bi bi-pencil"></i>
-                </button>
-            </div>
-    </div>
 </div>
 
-<ul #eRef class="list-group" *ngIf="selectedText.length > 0" style="position: fixed" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y">
+<ul #eRef class="list-group contextMenuCls" *ngIf="selectedText.length > 0" style="position: fixed"
+    [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y">
     <li class="list-group-item" (click)="tagSelected()">Tag Selected Text</li>
     <li class="list-group-item" (click)="tagSelected()">New Item</li>
     <li class="list-group-item" (click)="tagSelected()">My Item</li>
 </ul>
+
+<!-- <app-attachment-modal *ngIf="showAttachmentModal" [imageUrl]="topic?.storyImageUrl"></app-attachment-modal> -->

@@ -1,138 +1,25 @@
-  <app-nav-menu></app-nav-menu>
-  <app-aktbay-search></app-aktbay-search>
-  <div class="container-fluid py-1">
-    <div class="row my-3">
-      <div class="col-3">
-        <app-aktbay-topics (mode)="switchMode($event)"></app-aktbay-topics>
-      </div>
-      <div class="col-9">
-          <div class="card" style="height: 100%;">
-                <div class="card-header">
-                    <button class="btn btn-success float-end" (click)="newTopic()">New Topic</button>
-                    <span *ngIf="(topic$ | async) && form.enabled">Edit Story</span>
-                    <span *ngIf="!(topic$ | async) && form.enabled">Create Story</span>
-                    <span *ngIf="form.disabled">Story Details</span>
-                </div>
-                <div class="card-body">
-                  <div *ngIf="!(topic$ | async) || editMode" class="row">
-                    <div class="col-9">
-                      <form [formGroup]="form">
-                        <div class="form-floating mb-3">
-                            <input type="text" formControlName="storyTitle" class="form-control" id="storyTitle" placeholder="Story Title"/>
-                            <label for="storyTitle">Title/Prompt</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                          <input type="text" formControlName="storySummary" class="form-control" id="storySummary" placeholder="Story Summary"/>
-                          <label for="storySummary">Short Summary</label>
-                        </div>
-                        <div class="row mb-3">
-                          <div class="col-3">
-                              <div class="dropdown">
-                                <div>Permissions</div>
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                  {{selectedPermission || "Permissions"}}
-                                </button>
-                                <ul class="dropdown-menu">
-                                  <li *ngFor="let permissionItem of permissionItems" (click)="selectedPermission = permissionItem"><a class="dropdown-item" href="javascript:void(0)">{{permissionItem}}</a></li>
-                                </ul>
-                              </div>
-                            </div> 
-                            <div class="col-3">
-                              <div class="dropdown">
-                                <div>Output Templates</div>
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                  {{selectedOutputTemplate || "Output Templates"}}
-                                </button>
-                                <ul class="dropdown-menu">
-                                  <li *ngFor="let outputTemplateItem of outputTemplateItems" (click)="selectedOutputTemplate = outputTemplateItem"><a class="dropdown-item" href="javascript:void(0)">{{outputTemplateItem}}</a></li>
-                                </ul>
-                              </div>
-                            </div> 
-                            <div class="col-3">
-                              <div class="dropdown">
-                                <div>Allow DPRs?</div>
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                  {{selectedDpr || "Allow DPRs?"}}
-                                </button>
-                                <ul class="dropdown-menu">
-                                  <li *ngFor="let dprItem of dprItems" (click)="selectedDpr = dprItem"><a class="dropdown-item" href="javascript:void(0)">{{dprItem}}</a></li>
-                                </ul>
-                              </div>
-                            </div> 
-                            <div class="col-3">
-                              <div class="dropdown">
-                                <div>Monetization</div>
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                  {{selectedMonetization || "Monetization"}}
-                                </button>
-                                <ul class="dropdown-menu">
-                                  <li *ngFor="let monetizationItem of monetizationItems" (click)="selectedMonetization = monetizationItem"><a class="dropdown-item" href="javascript:void(0)">{{monetizationItem}}</a></li>
-                                </ul>
-                              </div>
-                            </div> 
-                        </div>
-                        <div class="form-floating mb-3">
-                            <textarea formControlName="storyDescription" class="form-control" placeholder="Story Description" id="storyDescription" style="height: 350px"></textarea>
-                            <label for="storyDescription">Description</label>
-                        </div>
-                      </form>
-                    </div>
-                    <div class="col-3">
-                      <div class="card mb-3">
-                        <button type="button" class="btn btn-primary position-relative m-3">
-                          DPR
-                          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            2
-                            <span class="visually-hidden">unread messages</span>
-                          </span>
-                        </button>
-                        <button type="button" class="btn btn-primary position-relative m-3" (click)="showAttachmentModal = true">
-                          Attachments
-                          <!-- <input #Image type="file" (change)="handleFileInput($event)"/> -->
-                          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            {{imageUrl.length}}
-                            <span class="visually-hidden">unread messages</span>
-                          </span>
-                        </button>
-                        <label class="btn btn-default">
-                          Browse <input type="file" hidden (change)="handleFileInput($event)">
-                        </label>
-                      </div>
-                    
-                      <div class="card" style="height: 65%;">
-                          <div class="card-header">
-                              Tags
-                              <button class="btn btn-outline-success float-end" (click)="showTagsModal = true">
-                                <i class="bi bi-plus"></i>
-                              </button>
-                          </div>
-                          <div class="card-body tag-boundary" >
-                              <button cdkDrag cdkDragBoundary=".tag-boundary" *ngFor="let tag of topicTags" type="button" [ngClass]="tag.tagClass">
-                                <i [ngClass]="getTagIcon(tag.tagCategory)"></i>
-                                <span> {{tag.tagName}} </span>
-                                <i class="bi bi-pencil" (click)="showTagsModal = true"></i>
-                              </button>
-                          </div>
-                        </div>
-                    
-                    </div>
-                  </div>
-                  <div *ngIf="(topic$ | async) && !editMode">
-                    <app-story-details></app-story-details>
-                  </div>
-                </div>
-                <div class="card-footer">
-                    <a href="javascript:void(0)" *ngIf="!(topic$ | async)  && !editMode" class="btn btn-success float-end" (click)="createStory()">Create Story & Add Tags to the story</a>
-                    <a href="javascript:void(0)" *ngIf="(topic$ | async) && editMode" class="btn btn-success float-end" (click)="saveEditedStory()">Save My Story</a>
-                    <a href="javascript:void(0)" *ngIf="(topic$ | async) && !editMode" class="btn btn-success float-end" (click)="editTopic()">Edit My Story</a>
-                    <a href="javascript:void(0)" style="margin-right: 5px;" *ngIf="(topic$ | async) && !editMode" class="btn btn-danger float-end" (click)="deleteTopic()">Delete My Story</a>
-                </div>
-            </div>
-      </div>
-    </div>
+<app-nav-menu></app-nav-menu>
+<app-aktbay-search></app-aktbay-search>
+<div class="form-check form-switch float-end">
+  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" [checked]="switchView" (click)="switchViewClick()">
+  <label class="form-check-label" for="flexSwitchCheckChecked">Switch View</label>
+</div>
+<div *ngIf="switchView" class="container-fluid py-1">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a [ngClass]="curPage === 'Private' ? 'nav-link active' : 'nav-link'" aria-current="page" href="javascript:void(0)" (click)="switchPage('Private')">My Stories (Private)</a>
+    </li>
+    <li class="nav-item">
+      <a [ngClass]="curPage === 'Public' ? 'nav-link active' : 'nav-link'" href="javascript:void(0)" (click)="switchPage('Public')">Public</a>
+    </li>
+  </ul>
+  
+  <div class="row m-3">
+      <app-aktbay-topics [topics]="(topics$ | async)"></app-aktbay-topics>
   </div>
-
-
-  <app-create-tag-modal *ngIf="showTagsModal"></app-create-tag-modal>
-
-  <app-attachment-modal *ngIf="showAttachmentModal" [imageUrl]="imageUrl"></app-attachment-modal>
+</div>
+<div *ngIf="!switchView" class="container-fluid py-1">
+  <div class="row m-3">
+      <app-aktbay-topics-view [topics]="(topics$ | async)" [updatedIndex]="(updatedIndex | async)"></app-aktbay-topics-view>
+  </div>
+</div>

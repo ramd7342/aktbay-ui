@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { StoryService } from 'src/app/services/story-service.service';
 import { Utils } from 'src/app/utils/Utils';
 
@@ -14,16 +14,17 @@ export class AttachmentModalComponent implements OnInit {
   @ViewChild('attachmentModal') 
   attachmentModal: any;
 
-  @Input() imageUrl: any;
+  @Input() storyImageUrl: any;
 
-  constructor(private modalService: NgbModal, private utils: Utils, private storyService: StoryService) {
-    console.log("Attachment modal open");
-    setTimeout(()=>{this.getTopicDetails()},10);
+  constructor(private modalService: NgbModal, private utils: Utils, private storyService: StoryService, public activeModal: NgbActiveModal) {
   }
 
   ngOnInit (): void
   {
-    
+  }
+
+  closeModal(): void {
+    this.activeModal.close('Modal Closed');
   }
 
   getTopicDetails(): void {

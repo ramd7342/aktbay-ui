@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Utils } from 'src/app/utils/Utils';
 import { TAGS } from '../constants/constants';
+import { IStory } from '../models/IStory';
 @Injectable({
   providedIn: 'root'
 })
 export class StoryService {
   private topics = new BehaviorSubject<any[]>([]);
+  public updatedIndex = new BehaviorSubject<number>(-1);
   private selectedTopic = new BehaviorSubject<any>(null);
   constructor(private utils: Utils) { 
    
@@ -32,31 +34,24 @@ export class StoryService {
     return topicTags;
   }
 
-  public addTopics(topic: any) : void {
+  public addTopics(topic: IStory) : void {
     let updatedTopics : any = [...this.topics.getValue()];
-    topic.storyTags = this.extractTags(topic);
     updatedTopics.push(topic);
     this.setTopics(updatedTopics);
+    this.updatedIndex.next(this.updatedIndex.getValue() + 1);
   }
 
   public deleteTopics(topic: any) : void {
-    this.topics.getValue().splice(this.topics.getValue().findIndex(m => m.storyTitle === topic.storyTitle),1);
+    this.topics.getValue().splice(this.topics.getValue().findIndex(m => m.storyId === topic.storyId),1);
   }
 
   public updateTopics(topic: any) : void {
-  //  let topics = [...this.topics.getValue()];
-  //  topics[topics.findIndex((m:any) => m.storyTitle === topic.storyTitle)] = topic;
-    var t = this.topics.getValue()[this.topics.getValue().findIndex((m:any) => m.storyTitle === topic.storyTitle)];
-    //console.log(t);
-    t.storyTitle = topic.storyTitle;
-    t.storySummary = topic.storySummary;
-    t.storyDescription = topic.storyDescription;
-    //console.log(t);
-    this.topics.getValue()[this.topics.getValue().findIndex((m:any) => m.storyTitle === topic.storyTitle)] = t;
-  //  this.setTopics(topics);
+    let index = this.topics.getValue().findIndex((m:any) => m.storyId === topic.storyId);
+    this.topics.getValue()[index] = topic;
+    this.updatedIndex.next(index);
   }
 
-  private setTopics(topics:any): void {
+  public setTopics(topics:any): void {
     this.topics.next(topics);
   }
 
