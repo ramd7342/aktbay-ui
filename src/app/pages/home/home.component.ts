@@ -19,13 +19,14 @@ export class HomeComponent implements OnInit
   public showTagsModal: boolean  = false;
   public curPage : string = "Private";
   public topics$: Observable<IStory[]> = new Observable<IStory[]>();
-  public updatedIndex: Observable<number> = new Observable<number>();
+  public updatedIndex: Observable<string> = new Observable<string>();
   public switchView: boolean = false;
+  public selectedView: string = "default";
   constructor(private modalService: NgbModal,private formBuilder: FormBuilder,private utils: Utils, private storyService: StoryService)
   {
     this.topic$ = this.storyService.getSelectedTopic();
     this.updatedIndex = this.storyService.updatedIndex;
-    this.storyService.getTopics().subscribe((m:any) => console.log(m)); 
+    this.storyService.getTopics().subscribe(); 
   }
 
   public switchMode(event:boolean) {

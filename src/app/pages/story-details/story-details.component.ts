@@ -16,6 +16,8 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
 
   @Input() public topic: any;
 
+  @Input() public pageView: any;
+
   public isDisplayContextMenu: boolean = false;
   public rightClickMenuItems: Array<any> = [];
   public rightClickMenuPositionX: number = 0;
@@ -23,21 +25,25 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
   public selectedText: any = "";
   public parsedTopicDescription: any = null;
   public contextMenuPosition = { x: '0px', y: '0px' };
+  public showMore: boolean = false;
   
-  constructor(private modalService: NgbModal,private cdr: ChangeDetectorRef, private sanitized: DomSanitizer, private utils: Utils, private storyService: StoryService) {
-    console.log("constructor call");
-  }
+  constructor(private modalService: NgbModal,private cdr: ChangeDetectorRef, private sanitized: DomSanitizer, private utils: Utils, private storyService: StoryService) {}
 
   ngOnInit (): void
   {
    // console.log("ngOninit call ");
-   // this.parsedTopicDescription = "";
-   // this.getTopicDataDetails();
+    this.parsedTopicDescription = "";
+    this.getTopicDataDetails();
+  }
+
+  closeModal() {
+    this.modalService.dismissAll();
   }
 
   ngOnChanges() {
     this.parsedTopicDescription = "";
     this.getTopicDataDetails();
+    this.showMore = this.topic?.storyImageUrl?.length > 5 ? true : false;
   }
 
   private getTopicDataDetails ()
@@ -65,13 +71,16 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
 
   onContextMenu(event: MouseEvent) {
     event.preventDefault();
-    this.selectedText = window?.getSelection()?.toString();
+    const s = window?.getSelection();
+    if (s && s.toString().length > 0) {
+      this.selectedText = window?.getSelection()?.toString();
+    }
     this.contextMenuPosition.x = event.clientX + 'px';
     this.contextMenuPosition.y = event.clientY + 'px';
   }
 
   public tagSelected(): void {
-    this.eRef.nativeElement.innerHTML = this.eRef.nativeElement.innerHTML.replace(this.selectedText, `<span style='background-color:#65cbf2'>${this.selectedText}</span>`);
+    this.eRef.nativeElement.innerHTML = this.eRef.nativeElement.innerHTML.replaceAll(this.selectedText, `<span style='background-color:#65cbf2'>${this.selectedText}</span>`);
     // this.newTag.emit(this.selectedText);
     this.topic.storyTags.push({ tagName: this.selectedText, tagCategory: "other", tagClass: this.utils.getRandomButton() });
     this.storyService.updateTopics(this.topic);

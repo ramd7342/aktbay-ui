@@ -1,10 +1,27 @@
 <app-nav-menu></app-nav-menu>
 <app-aktbay-search></app-aktbay-search>
-<div class="form-check form-switch float-end">
+<!-- <div class="form-check form-switch float-end">
   <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" [checked]="switchView" (click)="switchViewClick()">
   <label class="form-check-label" for="flexSwitchCheckChecked">Switch View</label>
+</div> -->
+
+<div class="container-fluid">
+  <div class="radioBtns">
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" [checked]="selectedView === 'default'" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="default" (click)="selectedView = 'default'">
+      <label class="form-check-label" for="inlineRadio1">Default View</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" [checked]="selectedView === 'accordion'" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="accordion" (click)="selectedView = 'accordion'">
+      <label class="form-check-label" for="inlineRadio2">Accordion View</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" [checked]="selectedView === 'card'" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="card" (click)="selectedView = 'card'">
+      <label class="form-check-label" for="inlineRadio3">Card View</label>
+    </div>
+  </div>
 </div>
-<div *ngIf="switchView" class="container-fluid py-1">
+<!-- <div class="container-fluid py-1">
   <ul class="nav nav-tabs">
     <li class="nav-item">
       <a [ngClass]="curPage === 'Private' ? 'nav-link active' : 'nav-link'" aria-current="page" href="javascript:void(0)" (click)="switchPage('Private')">My Stories (Private)</a>
@@ -17,9 +34,16 @@
   <div class="row m-3">
       <app-aktbay-topics [topics]="(topics$ | async)"></app-aktbay-topics>
   </div>
-</div>
-<div *ngIf="!switchView" class="container-fluid py-1">
-  <div class="row m-3">
-      <app-aktbay-topics-view [topics]="(topics$ | async)" [updatedIndex]="(updatedIndex | async)"></app-aktbay-topics-view>
+</div> -->
+<div class="card m-2" style="height: 75vh;overflow-y: scroll;">
+  <div class="card-body">
+    <div *ngIf="selectedView === 'accordion' || selectedView === 'card'" class="row m-3">
+      <app-aktbay-topics [view]="selectedView" [updatedIndex]="(updatedIndex | async)" [topics]="(topics$ | async)"></app-aktbay-topics>
+    </div>
+    <div *ngIf="selectedView === 'default'" class="container-fluid py-1">
+      <div class="row m-3">
+          <app-aktbay-topics-view [topics]="(topics$ | async)" [updatedIndex]="(updatedIndex | async)"></app-aktbay-topics-view>
+      </div>
+    </div>
   </div>
 </div>

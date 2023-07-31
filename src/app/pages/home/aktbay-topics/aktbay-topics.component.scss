@@ -14,6 +14,15 @@
     font-weight: 600;
 }
 
+.cardTopicActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    right: 2%;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
 .storycardimg {
     width: 90%;
     height: 100%;

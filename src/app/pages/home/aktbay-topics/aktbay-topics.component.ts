@@ -16,6 +16,8 @@ import { StoryDetailsComponent } from '../../story-details/story-details.compone
 export class AktbayTopicsComponent implements OnInit, OnChanges {
   public topicSummarySearchStr : any;
   @Input() public topics: any;
+  @Input() public view: any;
+  @Input() public updatedIndex: any;
   public selectedTopicIndex: number = -1;
   public curView: boolean = false;
   
@@ -23,7 +25,6 @@ export class AktbayTopicsComponent implements OnInit, OnChanges {
   }
 
   public ngOnInit(): void {
-   
   }
 
   ngOnChanges(): void {
@@ -39,7 +40,9 @@ export class AktbayTopicsComponent implements OnInit, OnChanges {
   }
 
   public readStory(topic:any): void {
-    this.modalService.open( StoryDetailsComponent, {backdrop: 'static',size: 'lg', windowClass : "myCustomModalClass", centered: true}).componentInstance.topic = topic;
+    const modalRef = this.modalService.open( StoryDetailsComponent, {backdrop: 'static',size: 'lg', windowClass : "myCustomModalClass", centered: true})
+    modalRef.componentInstance.topic = topic;
+    modalRef.componentInstance.pageView = "card";
   }
 
   public viewTopic(story:any): void {

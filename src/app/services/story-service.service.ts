@@ -8,7 +8,7 @@ import { IStory } from '../models/IStory';
 })
 export class StoryService {
   private topics = new BehaviorSubject<any[]>([]);
-  public updatedIndex = new BehaviorSubject<number>(-1);
+  public updatedIndex = new BehaviorSubject<string>("");
   private selectedTopic = new BehaviorSubject<any>(null);
   constructor(private utils: Utils) { 
    
@@ -38,7 +38,7 @@ export class StoryService {
     let updatedTopics : any = [...this.topics.getValue()];
     updatedTopics.push(topic);
     this.setTopics(updatedTopics);
-    this.updatedIndex.next(this.updatedIndex.getValue() + 1);
+    this.updatedIndex.next(topic.storyId);
   }
 
   public deleteTopics(topic: any) : void {
@@ -48,7 +48,7 @@ export class StoryService {
   public updateTopics(topic: any) : void {
     let index = this.topics.getValue().findIndex((m:any) => m.storyId === topic.storyId);
     this.topics.getValue()[index] = topic;
-    this.updatedIndex.next(index);
+    this.updatedIndex.next(topic.storyId);
   }
 
   public setTopics(topics:any): void {

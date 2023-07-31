@@ -1,6 +1,7 @@
 <div class="row">
     <div class="col-3">
-        <div class="card" style="height: 100%;">
+        <p class="text-center" *ngIf="topics.length < 1">No Topics to display</p>
+        <div *ngIf="topics.length >= 1" class="card" style="height: 100%;">
             <div class="card-header">
               <input class="form-control me-2" [(ngModel)]="topicSummarySearchStr" type="search" placeholder="Search" aria-label="Search">
             </div>

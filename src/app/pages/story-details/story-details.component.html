@@ -1,3 +1,6 @@
+<div class="closeBtn" *ngIf="pageView === 'card'">
+    <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+</div>
 <div class="row m-3" *ngIf="topic">
     <div class="col">
         <div (click)="selectedText = ''">
@@ -9,10 +12,11 @@
                 <b>Summary: </b>
                 <p>{{topic?.storySummary}}</p>
             </div>
-            <div>
+            <div class="mb-2">
                 <b>Description: </b>
                 <div #eRef (contextmenu)="onContextMenu($event)" [innerHTML]="parsedTopicDescription"></div>
             </div>
+            <hr>
             <div class="row">
                 <div class="col-3">
                     <div>
@@ -49,12 +53,16 @@
                     </div>
 
                 </div>
-                <div class="col-9">
-                    <b>Attachments: </b>
+                <div class="col-1 d-flex" style="height: 500px;justify-content: end;">
+                    <div class="vr"></div>
+                  </div>
+                <div class="col-8">
                     <div class="row">
                         <img *ngFor="let item of topic?.storyImageUrl" [src]="item.url" class="img-thumbnail attachmentsImg m-1" alt="..."
                             (click)="showAttachmentModal(item)" />
-                    </div>   
+                        <!-- <span *ngIf="showMore"> + Show More</span>
+                        <span *ngIf="!showMore"> - Show Less</span> -->
+                    </div>  
                 </div>
             </div>
             <div>

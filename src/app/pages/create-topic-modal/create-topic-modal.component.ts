@@ -48,7 +48,6 @@ export class CreateTopicModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("ngOnInit : ", this.story);
     this.selectedPermission = this.story?.storyPermissions || this.permissionItems[0];
     this.selectedOutputTemplate = this.story?.storyOutputTemplate || this.outputTemplateItems[0];
     this.selectedDpr = this.story?.storyDpr || this.dprItems[0];
@@ -60,6 +59,7 @@ export class CreateTopicModalComponent implements OnInit {
     this.form.get('storyTitle')?.setValue(this.story?.storyTitle || 'Test Title');
     this.form.get('storySummary')?.setValue(this.story?.storySummary || 'Test Summary');
     this.form.get('storyDescription')?.setValue(this.story?.storyDescription || this.sampleDescription);
+    this.imageUrl = this.story?.storyImageUrl || [];
   }
 
   public addTag(): void {

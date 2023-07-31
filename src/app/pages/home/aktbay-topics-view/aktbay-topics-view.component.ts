@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { StoryService } from 'src/app/services/story-service.service';
 import { Utils } from 'src/app/utils/Utils';
@@ -9,7 +9,7 @@ import { CreateTopicModalComponent } from '../../create-topic-modal/create-topic
   templateUrl: './aktbay-topics-view.component.html',
   styleUrls: ['./aktbay-topics-view.component.scss']
 })
-export class AktbayTopicsViewComponent implements OnInit {
+export class AktbayTopicsViewComponent implements OnInit, OnChanges {
   @Input() public topics: any;
   @Input() public updatedIndex: any;
   public topicSummarySearchStr : any;
@@ -20,7 +20,13 @@ export class AktbayTopicsViewComponent implements OnInit {
 
   ngOnInit (): void
   {
-    this.viewTopic(this.topics[this.updatedIndex], this.updatedIndex);
+    this.storyService.updatedIndex.subscribe((m:any) => { 
+      this.viewTopic(this.topics.find((n:any) => n.storyId === m), m);
+    });  
+  }
+
+  ngOnChanges(): void {
+    this.viewTopic(this.topics.find((m:any) => m.storyId === this.updatedIndex), this.updatedIndex);
   }
 
   public getEllipsisText(storySummary: string) {
@@ -33,7 +39,6 @@ export class AktbayTopicsViewComponent implements OnInit {
   }
 
   public editTopic(story:any): void {
-    console.log(story);
     const modalRef = this.modalService.open(CreateTopicModalComponent, {backdrop: 'static',size: 'lg', windowClass : "myCustomModalClass", centered: true});
     modalRef.componentInstance.story = story;
     modalRef.result.then((result) => {
