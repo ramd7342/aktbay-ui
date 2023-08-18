@@ -1,8 +1,11 @@
+import { IImage } from "./IImage";
+import { ITag } from "./ITag";
+
 export interface IStory {
     storyTitle: string;
     storySummary: string;
     storyDescription: string;
-    storyTags: Array<string>;
+    storyTags: Array<ITag>;
     storyId: string;
     storyCreatedDate: string;
     storyUpdatedDate: string;
@@ -12,5 +15,8 @@ export interface IStory {
     storyOutputTemplate: string;
     storyDpr: string;
     storyMonetization: string;
-    storyImageUrl: Array<string>;
+    storyImageUrl: Array<IImage>;
+    dprImageUrl?: Array<IImage>;
+    dprTags?: Array<ITag>;
+    dprApprovals?: boolean;
 }

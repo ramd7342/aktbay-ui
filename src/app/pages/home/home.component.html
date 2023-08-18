@@ -1,5 +1,4 @@
-<app-nav-menu></app-nav-menu>
-<app-aktbay-search></app-aktbay-search>
+
 <!-- <div class="form-check form-switch float-end">
   <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" [checked]="switchView" (click)="switchViewClick()">
   <label class="form-check-label" for="flexSwitchCheckChecked">Switch View</label>
@@ -42,7 +41,8 @@
     </div>
     <div *ngIf="selectedView === 'default'" class="container-fluid py-1">
       <div class="row m-3">
-          <app-aktbay-topics-view [topics]="(topics$ | async)" [updatedIndex]="(updatedIndex | async)"></app-aktbay-topics-view>
+          <!-- <app-aktbay-topics-view [topics]="(topics$ | async)" [updatedIndex]="(updatedIndex | async)"></app-aktbay-topics-view> -->
+          <app-public-stories [topics]="(topics$ | async)"></app-public-stories>
       </div>
     </div>
   </div>

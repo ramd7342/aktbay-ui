@@ -3,10 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DPR_ITEMS, MONETIZATION_ITEMS, OUTPUT_TEMPLATE_ITEMS, PERMISSION_ITEMS, SAMPLE_DESCRIPTION, TAGS } from '../../constants/constants';
 import { StoryService } from 'src/app/services/story-service.service';
-import { Observable, filter, map, tap } from 'rxjs';
+import { Observable, filter, map, of, tap } from 'rxjs';
 import { Utils } from 'src/app/utils/Utils';
 import { CreateTopicModalComponent } from '../create-topic-modal/create-topic-modal.component';
 import { IStory } from 'src/app/models/IStory';
+import { AppDataService } from 'src/app/services/app-data.service';
 @Component( {
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -17,14 +18,17 @@ export class HomeComponent implements OnInit
   public topic$: Observable<any> = new Observable<any>();
   public editMode : boolean = false;
   public showTagsModal: boolean  = false;
-  public curPage : string = "Private";
+  public curPage : string = "Public";
   public topics$: Observable<IStory[]> = new Observable<IStory[]>();
   public updatedIndex: Observable<string> = new Observable<string>();
-  public switchView: boolean = false;
+  public switchView: boolean = true;
   public selectedView: string = "default";
-  constructor(private modalService: NgbModal,private formBuilder: FormBuilder,private utils: Utils, private storyService: StoryService)
+  public loggedInUser: string = "";
+  constructor(private modalService: NgbModal,private formBuilder: FormBuilder,private utils: Utils, private storyService: StoryService, private appData: AppDataService)
   {
-    this.topic$ = this.storyService.getSelectedTopic();
+   // console.log(this.appData.getAppData());
+  //  this.topic$ = of(this.appData.getAppData());
+    this.topic$ = this.storyService.getSelectedTopic();  
     this.updatedIndex = this.storyService.updatedIndex;
     this.storyService.getTopics().subscribe(); 
   }
@@ -87,13 +91,16 @@ export class HomeComponent implements OnInit
   }
 
   ngOnInit(): void {
-    this.switchPage(this.curPage);
+    this.appData.getLoggedInUser().subscribe((user: string) => {
+      this.loggedInUser = user;
+      this.switchPage(this.curPage);
+    });
   }
 
   public switchPage(page: string) {
     this.curPage = page;
     this.topics$ = !this.switchView ? this.storyService.getTopics() : this.storyService.getTopics().pipe(
-      map((topics: any) => topics.filter((topic: any)=> topic.storyPermissions === this.curPage))
+      map((topics: any) => topics.filter((topic: any)=> topic.storyPermissions === this.curPage && topic.storyCreatedBy !== this.loggedInUser))
     );
   }
 

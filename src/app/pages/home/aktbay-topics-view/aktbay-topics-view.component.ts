@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { StoryService } from 'src/app/services/story-service.service';
 import { Utils } from 'src/app/utils/Utils';
 import { CreateTopicModalComponent } from '../../create-topic-modal/create-topic-modal.component';
+import { AppDataService } from 'src/app/services/app-data.service';
 
 @Component({
   selector: 'app-aktbay-topics-view',
@@ -15,7 +16,11 @@ export class AktbayTopicsViewComponent implements OnInit, OnChanges {
   public topicSummarySearchStr : any;
   public topic: any = null;
   public selectedTopicIndex: number = -1;
-  constructor(private modalService: NgbModal,private storyService: StoryService, private utils: Utils){
+  public loggedInUser: string = "";
+  constructor(private modalService: NgbModal,private storyService: StoryService, private utils: Utils, private appData: AppDataService){
+    this.appData.getLoggedInUser().subscribe((user: string) => {
+      this.loggedInUser = user;
+    });
   }
 
   ngOnInit (): void

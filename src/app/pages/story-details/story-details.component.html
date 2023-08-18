@@ -1,5 +1,14 @@
 <div class="closeBtn" *ngIf="pageView === 'card'">
-    <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+    <button type="button" class="btn btn-close float-end" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+</div>
+<button type="button" *ngIf="topic.storyCreatedBy !== loggedInUser && topic.storyDpr === 'Yes (public)'" class="btn btn-primary float-end m-1" data-bs-dismiss="modal" aria-label="Close" (click)="dprStory(topic)">
+    <i class="bi bi-pencil"></i>
+</button>
+<div *ngIf="topic.dprApprovals && topic.storyCreatedBy === loggedInUser">
+    <p><b>DPR</b> </p>
+    <p>Tags : {{topic.dprTags?.length}}</p>
+    <p>Attachments : {{topic.dprImageUrl?.length}}</p>
+    <button type="button" class="btn btn-primary float-end m-1" (click)="approveDpr(topic)"> Approve DPR </button>
 </div>
 <div class="row m-3" *ngIf="topic">
     <div class="col">
@@ -57,8 +66,9 @@
                     <div class="vr"></div>
                   </div>
                 <div class="col-8">
+                    <button class="btn btn-success" *ngIf="(topic.storyCreatedBy === loggedInUser) || (topic.storyCreatedBy !== loggedInUser && topic.storyDpr === 'Yes (public)')"  (click)="tagSelectionWithImage()"> <i class="upload bi bi-cloud-upload"></i></button>
                     <div class="row">
-                        <img *ngFor="let item of topic?.storyImageUrl" [src]="item.url" class="img-thumbnail attachmentsImg m-1" alt="..."
+                        <img *ngFor="let item of topic?.storyImageUrl" [src]="item.imgSrc" class="img-thumbnail attachmentsImg m-1" alt="..."
                             (click)="showAttachmentModal(item)" />
                         <!-- <span *ngIf="showMore"> + Show More</span>
                         <span *ngIf="!showMore"> - Show Less</span> -->
@@ -81,7 +91,7 @@
 <ul #eRef class="list-group contextMenuCls" *ngIf="selectedText.length > 0" style="position: fixed"
     [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y">
     <li class="list-group-item" (click)="tagSelected()">Tag Selected Text</li>
-    <li class="list-group-item" (click)="tagSelected()">New Item</li>
+    <li class="list-group-item" (click)="tagSelectionWithImage()">Tag Selection with an Image</li>
     <li class="list-group-item" (click)="tagSelected()">My Item</li>
 </ul>
 

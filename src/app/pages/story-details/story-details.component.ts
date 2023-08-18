@@ -5,6 +5,9 @@ import { Utils } from 'src/app/utils/Utils';
 import { StoryService } from 'src/app/services/story-service.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AttachmentModalComponent } from '../home/attachment-modal/attachment-modal.component';
+import { CreateImageModalComponent } from '../create-image-modal/create-image-modal.component';
+import { CreateTopicModalComponent } from '../create-topic-modal/create-topic-modal.component';
+import { AppDataService } from 'src/app/services/app-data.service';
 @Component({
   selector: 'app-story-details',
   templateUrl: './story-details.component.html',
@@ -26,12 +29,16 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
   public parsedTopicDescription: any = null;
   public contextMenuPosition = { x: '0px', y: '0px' };
   public showMore: boolean = false;
+
+  public loggedInUser: string = "ram7459";
   
-  constructor(private modalService: NgbModal,private cdr: ChangeDetectorRef, private sanitized: DomSanitizer, private utils: Utils, private storyService: StoryService) {}
+  constructor(private modalService: NgbModal,private cdr: ChangeDetectorRef, private sanitized: DomSanitizer, private utils: Utils, private storyService: StoryService, private appData: AppDataService) {}
 
   ngOnInit (): void
   {
-   // console.log("ngOninit call ");
+    this.appData.getLoggedInUser().subscribe((user: string) => {
+      this.loggedInUser = user;
+    });
     this.parsedTopicDescription = "";
     this.getTopicDataDetails();
   }
@@ -89,6 +96,18 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
     //this.parsedTopicDescription = this.parsedTopicDescription.replace(this.selectedText, `<span style="background:#FFFF00"> ${this.selectedText} </span>`)
   }
 
+  public tagSelectionWithImage(): void {
+    const modalRef = this.modalService.open(CreateImageModalComponent, {backdrop: 'static',size: 'lg', windowClass : "myCustomModalClass", centered: true});
+    modalRef.componentInstance.selectedText = this.selectedText;
+    modalRef.componentInstance.story = this.topic;
+    modalRef.result.then((result) => {
+      //console.log(result);
+    }).catch((error) => {
+      //console.log(error);
+    });
+    this.selectedText = "";
+  }
+
   public getTagIcon(category: string) : string{
     let iconClass = "";
     switch(category){
@@ -131,6 +150,29 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
         this.parsedTopicDescription = this.parsedTopicDescription.substring(0, index) + replacement + this.parsedTopicDescription.substring(index)
       } );
     }
+  }
+
+  public approveDpr(topic:any): void {
+    var t = topic;
+    t['storyTags'] = [...topic.storyTags, ...topic.dprTags];
+    t['storyImageUrl'] = [...topic.storyImageUrl, ...topic.dprImageUrl];
+
+    t['dprTags'] = null;
+    t['dprImageUrl'] = null;
+    t['dprApprovals'] = false;
+    this.storyService.updateTopics(t);
+  }
+
+  public dprStory(topic:any) : void{
+    const modalRef = this.modalService.open(CreateTopicModalComponent, {backdrop: 'static',size: 'lg', windowClass : "myCustomModalClass", centered: true});
+    modalRef.componentInstance.story = topic;
+    modalRef.componentInstance.fromDpr = true;
+    modalRef.result.then((result) => {
+      //console.log(result);
+    }).catch((error) => {
+     // console.log(error);
+    });
+    this.storyService.setSelectedTopic(topic);
   }
 
   

@@ -7,6 +7,7 @@ import { DPR_ITEMS, MONETIZATION_ITEMS, OUTPUT_TEMPLATE_ITEMS, PERMISSION_ITEMS,
 import { ITag, ITagRegex } from 'src/app/models/ITag';
 import { IStory } from 'src/app/models/IStory';
 import { v4 as uuidv4 } from 'uuid';
+import { AppDataService } from 'src/app/services/app-data.service';
 @Component({
   selector: 'app-create-topic-modal',
   templateUrl: './create-topic-modal.component.html',
@@ -29,22 +30,38 @@ export class CreateTopicModalComponent implements OnInit {
   public editMode : boolean = false;  
   public sampleDescription: string = SAMPLE_DESCRIPTION;
   public imageUrl: Array<any> = [];
+  public dprImageUrl: Array<any> = [];
   public storyTags: Array<ITag> = [];
+  public dprStoryTags: Array<ITag> = [];
   public newTagName: string = "";
   public newTagCategory: string = "";
+
+  public imgTitle: string = "";
+  public imgDescription: string = "";
+  public imageRating: number = 0;
+  public imageAudio: Array<any> = [];
+
+  public uploadedImage : any = {};
 
   @ViewChild('createTopicModal') 
   public createTopicModal: any;
 
   @Input() public story: any;
 
-  constructor(private formBuilder: FormBuilder,private utils: Utils, private storyService: StoryService, public activeModal: NgbActiveModal) {
+  @Input() public fromDpr: boolean = false;
+
+  public loggedInUser: string = "";
+
+  constructor(private formBuilder: FormBuilder,private utils: Utils, private storyService: StoryService, public activeModal: NgbActiveModal, private appData: AppDataService) {
     this.form = this.formBuilder.group({
       storyTitle: ['Test Title', [Validators.min(5), Validators.required]],
       storySummary: ['Test Summary', [Validators.min(5), Validators.required]],
       storyDescription: [this.sampleDescription, [Validators.min(5), Validators.required]],
+      storyCreatedBy: ['ram7459', [Validators.min(5), Validators.required]],
     });
-    
+    this.appData.getLoggedInUser().subscribe((user: string) => {
+      this.loggedInUser = user;
+    });
   }
 
   ngOnInit(): void {
@@ -59,13 +76,38 @@ export class CreateTopicModalComponent implements OnInit {
     this.form.get('storyTitle')?.setValue(this.story?.storyTitle || 'Test Title');
     this.form.get('storySummary')?.setValue(this.story?.storySummary || 'Test Summary');
     this.form.get('storyDescription')?.setValue(this.story?.storyDescription || this.sampleDescription);
+    this.form.get('storyCreatedBy')?.setValue(this.story?.storyCreatedBy || 'ram7459');
+
+    if(this.fromDpr) {
+      this.form.get('storyTitle')?.disable();
+      this.form.get('storySummary')?.disable();
+      this.form.get('storyDescription')?.disable();
+      this.form.get('storyCreatedBy')?.disable();
+    }
     this.imageUrl = this.story?.storyImageUrl || [];
   }
 
   public addTag(): void {
-    this.storyTags.push({ tagName: this.newTagName, tagCategory: this.newTagCategory, tagClass: this.utils.getRandomButton() });
+    if(this.fromDpr) {
+      this.dprStoryTags.push({ tagName: this.newTagName, tagCategory: this.newTagCategory, tagClass: this.utils.getRandomButton() });
+    } else {
+      this.storyTags.push({ tagName: this.newTagName, tagCategory: this.newTagCategory, tagClass: this.utils.getRandomButton() });
+    }
     this.newTagCategory = "";
     this.newTagName = "";
+  }
+
+  public addImage(): any {
+    if(this.fromDpr) {
+      this.dprImageUrl.push({imgTitle:this.imgTitle, imgDescription: this.imgDescription, imgRating: this.imageRating, imgAudio: this.imageAudio, imgSrc: this.uploadedImage.url});
+    } else {
+      this.imageUrl.push({imgTitle:this.imgTitle, imgDescription: this.imgDescription, imgRating: this.imageRating, imgAudio: this.imageAudio, imgSrc: this.uploadedImage.url});
+    }
+    this.imgTitle = "";
+    this.imgDescription = "";
+    this.imageRating = 0;
+    this.imageAudio = [];
+    this.uploadedImage = null;
   }
 
   closeModal(): void {
@@ -75,8 +117,14 @@ export class CreateTopicModalComponent implements OnInit {
   public deleteTag(tag: any): void {
     this.storyTags.splice(this.storyTags.indexOf(tag), 1);
   }
+  public deleteDprTag(tag: any): void {
+    this.dprStoryTags.splice(this.dprStoryTags.indexOf(tag), 1);
+  }
   public deleteImage (image: any): void {
-    this.imageUrl.splice(this.imageUrl.indexOf(image), 1);
+    this.imageUrl.splice(this.imageUrl.findIndex(img => img.imgTitle === image.imgTitle), 1);
+  }
+  public deleteDprImage (image: any): void {
+    this.dprImageUrl.splice(this.dprImageUrl.findIndex(img => img.imgTitle === image.imgTitle), 1);
   }
   public createStory (): void
   {
@@ -86,14 +134,16 @@ export class CreateTopicModalComponent implements OnInit {
       "storyId": uuidv4(),
       "storyCreatedDate": new Date().toISOString(),
       "storyUpdatedDate": new Date().toISOString(),
-      "storyCreatedBy": "Ram",
-      "storyUpdatedBy": "Ram",
+      "storyCreatedBy": this.form.get('storyCreatedBy')?.value,
+      "storyUpdatedBy": this.form.get('storyCreatedBy')?.value,
       "storyImageUrl": this.imageUrl,
       "storyPermissions": this.selectedPermission, 
       "storyOutputTemplate": this.selectedOutputTemplate,
       "storyDpr": this.selectedDpr,
       "storyMonetization": this.selectedMonetization, 
     }; 
+
+    console.log("saveObj", saveObj);
     this.storyService.addTopics(saveObj);
     this.resetComponentValues();
     this.closeModal();
@@ -102,18 +152,23 @@ export class CreateTopicModalComponent implements OnInit {
   public updateStory (): void {
     let updateObj: IStory = {
       ...this.form.getRawValue(), 
-      "storyTags": this.storyTags,
+      "storyTags": this.fromDpr ? this.story.storyTags: this.storyTags,
       "storyId": this.story.storyId,
       "storyCreatedDate": this.story.storyCreatedDate,
       "storyUpdatedDate": new Date().toISOString(),
       "storyCreatedBy": this.story.storyCreatedBy,
-      "storyUpdatedBy": "Ram",
-      "storyImageUrl": this.imageUrl,
+      "storyUpdatedBy": this.fromDpr ? this.loggedInUser : this.story.storyCreatedBy,
+      "storyImageUrl": this.fromDpr ? this.story.storyImageUrl: this.imageUrl,
       "storyPermissions": this.selectedPermission, 
       "storyOutputTemplate": this.selectedOutputTemplate,
       "storyDpr": this.selectedDpr,
       "storyMonetization": this.selectedMonetization, 
     }; 
+    if(this.fromDpr) {
+      updateObj['dprApprovals'] = true;
+      updateObj['dprImageUrl'] = this.dprImageUrl;
+      updateObj['dprTags'] = this.dprStoryTags;
+    }
     this.storyService.updateTopics(updateObj);
     this.resetComponentValues();
     this.closeModal();
@@ -133,7 +188,8 @@ export class CreateTopicModalComponent implements OnInit {
 
     let reader = new FileReader();
     reader.onload = (event: any) => {
-      this.imageUrl.push({name:fileToUpload.name, url: event.target.result});
+      //this.imageUrl.push({name:fileToUpload.name, url: event.target.result});
+      this.uploadedImage = {name:fileToUpload.name, url: event.target.result};
     }
    reader.readAsDataURL(fileToUpload);
   }

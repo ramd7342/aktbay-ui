@@ -7,6 +7,11 @@
         <div class="row">
             <form [formGroup]="form">
                 <div class="form-floating mb-3">
+                    <input type="text" formControlName="storyCreatedBy" class="form-control" id="storyCreatedBy"
+                        placeholder="Story Created By" />
+                    <label for="storyCreatedBy">Created By</label>
+                </div>
+                <div class="form-floating mb-3">
                     <input type="text" formControlName="storyTitle" class="form-control" id="storyTitle"
                         placeholder="Story Title" />
                     <label for="storyTitle">Title/Prompt</label>
@@ -20,7 +25,7 @@
                     <div class="col-3">
                         <div class="dropdown">
                             <div>Permissions</div>
-                            <button class="btn btn-primary dropdown-toggle"
+                            <button class="btn btn-primary dropdown-toggle" [disabled]="fromDpr"
                                 type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{selectedPermission || "Permissions"}}
                             </button>
@@ -34,7 +39,7 @@
                     <div class="col-3">
                         <div class="dropdown">
                             <div>Output Templates</div>
-                            <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" [disabled]="fromDpr" 
                                 aria-expanded="false">
                                 {{selectedOutputTemplate || "Output Templates"}}
                             </button>
@@ -48,7 +53,7 @@
                     <div class="col-3">
                         <div class="dropdown">
                             <div>Allow DPRs?</div>
-                            <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" [disabled]="fromDpr" 
                                 aria-expanded="false">
                                 {{selectedDpr || "Allow DPRs?"}}
                             </button>
@@ -61,7 +66,7 @@
                     <div class="col-3">
                         <div class="dropdown">
                             <div>Monetization</div>
-                            <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" [disabled]="fromDpr" 
                                 aria-expanded="false">
                                 {{selectedMonetization || "Monetization"}}
                             </button>
@@ -97,13 +102,29 @@
                 </div>
             </div>
             <span class="badge bg-danger m-2" *ngFor="let tag of storyTags" >{{tag.tagName}} <i class="bi bi-x-circle-fill" (click)="deleteTag(tag)"></i></span>
+            <span class="badge bg-danger m-2" *ngFor="let tag of dprStoryTags" >{{tag.tagName}} <i class="bi bi-x-circle-fill" (click)="deleteDprTag(tag)"></i></span>
         </div>
         <div>
             <h6>Attachments : </h6>
-            <label class="btn btn-default">
-                <i class="upload bi bi-cloud-upload"></i> <input type="file" hidden (change)="handleFileInput($event)">
-            </label>
-            <span class="badge bg-primary m-2" *ngFor="let tag of imageUrl" >{{tag.name}} <i class="bi bi-x-circle-fill" (click)="deleteImage(tag)"></i></span>
+            <div class="row">
+                <div class="col-5">
+                    <input type="text" class="form-control" [(ngModel)]="imgTitle" aria-label="Uploaded Image Title" placeholder="Uploaded Image Title">
+                </div>
+                <div class="col-5">
+                    <input type="text" class="form-control" [(ngModel)]="imgDescription" aria-label="Uploaded Image Description" placeholder="Uploaded Image Description">
+                </div>
+                <div class="col-1">
+                    <label class="btn btn-default">
+                        <i class="upload bi bi-cloud-upload"></i> <input type="file" hidden (change)="handleFileInput($event)">
+                    </label>
+                    <span>{{uploadedImage?.name}}</span>
+                </div>
+                <div class="col-1">
+                    <button class="btn btn-success" (click)="addImage()">Add Image</button>
+                </div>
+            </div>
+            <span class="badge bg-primary m-2" *ngFor="let tag of imageUrl" >{{tag.imgTitle}} <i class="bi bi-x-circle-fill" (click)="deleteImage(tag)"></i></span>
+            <span class="badge bg-primary m-2" *ngFor="let tag of dprImageUrl" >{{tag.imgTitle}} <i class="bi bi-x-circle-fill" (click)="deleteDprImage(tag)"></i></span>
         </div>
     </div>
     <div class="modal-footer">

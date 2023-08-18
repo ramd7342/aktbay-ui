@@ -6,6 +6,7 @@ import { StoryService } from 'src/app/services/story-service.service';
 import { Utils } from 'src/app/utils/Utils';
 import { CreateTopicModalComponent } from '../../create-topic-modal/create-topic-modal.component';
 import { StoryDetailsComponent } from '../../story-details/story-details.component';
+import { AppDataService } from 'src/app/services/app-data.service';
 
 
 @Component({
@@ -20,8 +21,11 @@ export class AktbayTopicsComponent implements OnInit, OnChanges {
   @Input() public updatedIndex: any;
   public selectedTopicIndex: number = -1;
   public curView: boolean = false;
-  
-  constructor(private modalService: NgbModal,private storyService: StoryService, private utils: Utils){ 
+  public loggedInUser: string = "";
+  constructor(private modalService: NgbModal,private storyService: StoryService, private utils: Utils, private appData: AppDataService){ 
+    this.appData.getLoggedInUser().subscribe((user: string) => {
+      this.loggedInUser = user;
+    });
   }
 
   public ngOnInit(): void {
