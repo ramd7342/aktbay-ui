@@ -1,6 +1,6 @@
 <div class="card mb-1" *ngFor="let topic of topics">
     <div class="card-body">
-        <button type="button" *ngIf="topic.storyCreatedBy !== loggedInUser && topic.storyDpr === 'Yes (public)'" class="btn btn-primary float-end m-1" data-bs-dismiss="modal" aria-label="Close">
+        <button type="button" *ngIf="topic.storyCreatedBy !== loggedInUser && topic.storyDpr === 'Yes (public)'" class="btn btn-primary float-end m-1" (click)="editTopic(topic)">
             <i class="bi bi-pencil"></i>
         </button>
         <div class="row">
@@ -41,15 +41,15 @@
             <div class="col-5">
                 <div>
                     <b>Title: </b>
-                    <p>{{topic?.storyTitle}}</p>
+                    <p>{{topic?.content?.storyTitle}}</p>
                 </div>
                 <div>
                     <b>Summary: </b>
-                    <p>{{topic?.storySummary}}</p>
+                    <p>{{topic?.content?.storySummary}}</p>
                 </div>
                 <div class="mb-2">
                     <b>Description: </b>
-                    <p>{{topic?.storyDescription}}</p>
+                    <p>{{topic?.content?.storyDescription}}</p>
                 </div>
             </div>
             <div class="col-4">

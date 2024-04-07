@@ -2,9 +2,12 @@ import { IImage } from "./IImage";
 import { ITag } from "./ITag";
 
 export interface IStory {
-    storyTitle: string;
-    storySummary: string;
-    storyDescription: string;
+    content : {
+        storyTitle: string;
+        storySummary: string;
+        storyDescription: string;
+    },
+    id?:string,
     storyTags: Array<ITag>;
     storyId: string;
     storyCreatedDate: string;

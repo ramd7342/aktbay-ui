@@ -1,7 +1,7 @@
 import { ITagRegex } from "../models/ITag";
 
 export const TAGS: Array<ITagRegex> = [ 
-    {tagRegex: /\@(.*?)\@/gm, category: "country", displayName: "Place"},
+    {tagRegex: /\@(.*?)\@/gm, category: "place", displayName: "Place"},
     {tagRegex: /\#(.*?)\#/gm, category: "food", displayName: "Food"},
     {tagRegex: /\$(.*?)\$/gm, category: "hotel", displayName: "Hotel"}
 ];

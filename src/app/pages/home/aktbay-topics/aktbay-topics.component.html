@@ -12,7 +12,7 @@
     <div class="accordion-item" *ngFor="let topic of topics;let i = index">
       <h2 class="accordion-header" [attr.id]="'topic' + i">
         <button [ngClass]="selectedTopicIndex === i ? 'accordion-button' : 'accordion-button collapsed'" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse'+i" aria-expanded="true" [attr.aria-controls]="'collapse'+i" (click)="selectedTopicIndex = i">
-          <span class="topicTitle">{{topic.storyTitle}}</span>
+          <span class="topicTitle">{{topic?.content?.storyTitle}}</span>
           <span class="topicActions float-end" *ngIf="topic.storyCreatedBy === loggedInUser">
             <i class="bi bi-trash m-1" (click)="deleteTopic(topic)"></i>
             <i class="bi bi-pencil m-1" (click)="editTopic(topic)"></i>
@@ -33,8 +33,8 @@
         <div class="card" style="width: 18rem;">
           <img [src]="topic?.storyImageUrl[0]?.url || '../../../../assets/travelnotes.png'" class="card-img-top storycardimg" alt="...">
           <div class="card-body">
-            <h5 class="card-title">{{topic.storyTitle}}</h5>
-            <p class="card-text">{{topic.storySummary}}</p>
+            <h5 class="card-title">{{topic?.content?.storyTitle}}</h5>
+            <p class="card-text">{{topic?.content?.storySummary}}</p>
             <a href="javascript:void(0)" class="btn btn-primary" (click)="readStory(topic)">Read more</a>
             <span class="cardTopicActions float-end" *ngIf="topic.storyCreatedBy === loggedInUser">
               <i class="bi bi-trash m-1" (click)="deleteTopic(topic)"></i>

@@ -9,7 +9,7 @@
                 <ul class="list-group">
                     <li class="list-group-item" *ngFor="let topic of topics;let i = index">
                       <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1" (click)="viewTopic(topic, i)">
-                      <span style="margin-left: 10px;" (click)="viewTopic(topic, i)">{{getEllipsisText(topic.storySummary)}}</span>
+                      <span style="margin-left: 10px;" (click)="viewTopic(topic, i)">{{getEllipsisText(topic?.content?.storySummary)}}</span>
                       <span class="float-end" *ngIf="topic.storyCreatedBy === loggedInUser">
                         <i class="bi bi-trash m-1" (click)="deleteTopic(topic)"></i>
                         <i class="bi bi-pencil m-1" (click)="editTopic(topic)"></i>

@@ -1,0 +1,12 @@
+<!-- <div *ngFor="let item of selections[idref]?.selections; let i = index">
+  <ng-template [hash]="getId(i)">
+    {{item.tagtext}}
+  </ng-template>
+  <mark [ngbTooltip]="item.tagtext">{{item.text}}</mark>
+  <div #eRef>
+    {{selections[idref]?.text.substring(0, selections[idref]?.text.indexOf(item.text))}} <mark [ngbTooltip]="item.tagtext">{{item.text}}</mark> {{selections[idref]?.text.substring(selections[idref]?.text.indexOf(item.text) + item.text.length)}}
+  </div>
+
+</div> -->
+<!-- <div #myDiv [innerHTML]="descr"></div> -->
+<div id="container" [innerHTML]="getTranslatedText(selections[idref]) | sanitizedHtml"></div>

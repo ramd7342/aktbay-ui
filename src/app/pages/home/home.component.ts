@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit
   //  this.topic$ = of(this.appData.getAppData());
     this.topic$ = this.storyService.getSelectedTopic();  
     this.updatedIndex = this.storyService.updatedIndex;
-    this.storyService.getTopics().subscribe(); 
+   // this.storyService.getTopics().subscribe((data:any) => console.log(data)); 
   }
 
   public switchMode(event:boolean) {
@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit
   public getTagIcon(category: string) : string{
     let iconClass = "";
     switch(category){
-      case "country": 
+      case "place": 
         iconClass = "bi bi-globe-americas";
         break; 
       case "region":
@@ -98,10 +98,13 @@ export class HomeComponent implements OnInit
   }
 
   public switchPage(page: string) {
+    console.log("switchPage :: ",page, this.switchView);
     this.curPage = page;
-    this.topics$ = !this.switchView ? this.storyService.getTopics() : this.storyService.getTopics().pipe(
+    this.topics$ = !this.switchView ? this.storyService.topics : this.storyService.topics.pipe(
       map((topics: any) => topics.filter((topic: any)=> topic.storyPermissions === this.curPage && topic.storyCreatedBy !== this.loggedInUser))
     );
+    this.storyService.topics.subscribe((data: any) => console.log("getTopics$ :: ",data));
+    this.topics$.subscribe((data: any) => console.log("topics$ :: ",data));
   }
 
   /*public setValuesOnForm(topic:any): void {
