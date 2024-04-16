@@ -91,14 +91,14 @@
                 <div class="col-10">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" [(ngModel)]="newTagName" aria-label="Text input with dropdown button">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{newTagCategory || "Select Category"}}</button>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{getTagDisplayName(newTagCategory) || "Select Category"}}</button>
                         <ul class="dropdown-menu dropdown-menu-end">
                           <li *ngFor="let tag of tags" ><a class="dropdown-item" href="javascript:void(0)" (click)="newTagCategory = tag.category">{{tag.displayName}}</a></li>
                         </ul> 
                     </div>
                 </div>
                 <div class="col-2">
-                    <button class="btn btn-success" (click)="addTag()">Add Tag</button>
+                    <button class="btn btn-success" [disabled]="newTagName === '' || newTagCategory === 'Select Category'" (click)="addTag()">Add Tag</button>
                 </div>
             </div>
             <span class="badge bg-danger m-2" *ngFor="let tag of storyTags" >{{tag.tagName}} <i class="bi bi-x-circle-fill" (click)="deleteTag(tag)"></i></span>

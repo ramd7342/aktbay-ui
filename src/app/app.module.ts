@@ -23,11 +23,20 @@ import { CreateImageModalComponent } from './pages/create-image-modal/create-ima
 import { AppDataService } from './services/app-data.service';
 import { MyStoriesComponent } from './pages/personal/my-stories/my-stories.component';
 import { PublicStoriesComponent } from './pages/public-stories/public-stories.component';
+import { HttpClientModule } from '@angular/common/http';
+import { TranslateComponent } from './pages/translate/translate.component';
+import { ShowTranslatedComponent } from './pages/translate/show-translated/show-translated.component';
+import { SanitizedHtmlPipe } from './pipes/sanitize-html.pipe';
+import { TextHighlightComponent } from './pages/text-highlight/text-highlight.component';
+import { AnnotateContentComponent } from './pages/annotate-content/annotate-content.component';
+import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SummaryPipe,
+    SanitizedHtmlPipe,
     StoryDetailsComponent,
     NavMenuComponent,
     AktbaySearchComponent,
@@ -38,7 +47,12 @@ import { PublicStoriesComponent } from './pages/public-stories/public-stories.co
     AktbayTopicsViewComponent,
     CreateImageModalComponent,
     MyStoriesComponent,
-    PublicStoriesComponent
+    PublicStoriesComponent,
+    TranslateComponent,
+    TextHighlightComponent,
+    ShowTranslatedComponent,
+    AnnotateContentComponent,
+    LandingPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,8 +62,10 @@ import { PublicStoriesComponent } from './pages/public-stories/public-stories.co
     CommonModule,
     NgbModule,
     DragDropModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    HttpClientModule,
   ],
+  exports: [SummaryPipe, SanitizedHtmlPipe],
   entryComponents: [CreateTagModalComponent, AttachmentModalComponent, CreateTopicModalComponent],
   providers: [StoryService, Utils, AppDataService],
   bootstrap: [AppComponent],

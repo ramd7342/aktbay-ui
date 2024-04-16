@@ -1,0 +1,33 @@
+<!-- <div class="mt-5 container">
+    <h3>English</h3>
+    <div #idRef id="english">
+        <p>
+            
+            Ne gule-e naghma <span id="hoonReplace">my complete analysis on hoon</span>, <span id="naReplace">description about na</span> parda-e saaz;
+        </p>
+        <p>
+            Ne gule-e naghma <b id="hoon" style="color:red">hoon</b>, <b id="na" style="color:blue">na</b> parda-e saaz;
+        </p>
+        <p>
+            main hoon apni shikast ki aawaz
+        </p>
+    </div>
+</div> -->
+
+
+<div #eRef class="mt-5 container" (click)="selectedText = ''">
+    <h3>English</h3>
+    <div id="english" (contextmenu)="onContextMenu($event)">
+        <p #rRef>
+            Ne gule-e naghma hoon, na parda-e saaz;<br>
+            main hoon apni shikast ki aawaz
+        </p>
+    </div>
+</div>
+
+<ul class="list-group contextMenuCls" *ngIf="selectedText.length > 0" style="position: fixed" [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y">
+    <li class="list-group-item">
+            <input type="text" class="form-control" placeholder="Tag Text" [(ngModel)]="tagText">
+            <button class="btn btn-primary btn-sm m-2" (click)="tagSelectionWithText()">Tag Text</button>
+    </li>
+</ul>

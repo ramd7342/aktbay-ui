@@ -65,6 +65,7 @@ export class CreateTopicModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log("STORY : ",this.story);
     this.selectedPermission = this.story?.storyPermissions || this.permissionItems[0];
     this.selectedOutputTemplate = this.story?.storyOutputTemplate || this.outputTemplateItems[0];
     this.selectedDpr = this.story?.storyDpr || this.dprItems[0];
@@ -73,9 +74,9 @@ export class CreateTopicModalComponent implements OnInit {
     this.form.get('storyDescription')?.valueChanges.subscribe((value:string) => {
       this.storyTags = this.utils.extractTags(value, this.storyTags)
     })
-    this.form.get('storyTitle')?.setValue(this.story?.storyTitle || 'Test Title');
-    this.form.get('storySummary')?.setValue(this.story?.storySummary || 'Test Summary');
-    this.form.get('storyDescription')?.setValue(this.story?.storyDescription || this.sampleDescription);
+    this.form.get('storyTitle')?.setValue(this.story?.content?.storyTitle || 'Test Title');
+    this.form.get('storySummary')?.setValue(this.story?.content?.storySummary || 'Test Summary');
+    this.form.get('storyDescription')?.setValue(this.story?.content?.storyDescription || this.sampleDescription);
     this.form.get('storyCreatedBy')?.setValue(this.story?.storyCreatedBy || 'ram7459');
 
     if(this.fromDpr) {
@@ -110,6 +111,10 @@ export class CreateTopicModalComponent implements OnInit {
     this.uploadedImage = null;
   }
 
+  public getTagDisplayName(tagName: string): string {
+    return this.tags.find((tag: ITagRegex) => tag.category === tagName)?.displayName || "";
+  }
+
   closeModal(): void {
     this.activeModal.close('Modal Closed');
   }
@@ -129,7 +134,11 @@ export class CreateTopicModalComponent implements OnInit {
   public createStory (): void
   {
     let saveObj: IStory = {
-      ...this.form.getRawValue(), 
+      "content" : {
+        "storyTitle": this.form.get('storyTitle')?.value,
+        "storySummary": this.form.get('storySummary')?.value,
+        "storyDescription": this.form.get('storyDescription')?.value,
+      },
       "storyTags": this.storyTags,
       "storyId": uuidv4(),
       "storyCreatedDate": new Date().toISOString(),
@@ -151,7 +160,12 @@ export class CreateTopicModalComponent implements OnInit {
 
   public updateStory (): void {
     let updateObj: IStory = {
-      ...this.form.getRawValue(), 
+      "content" : {
+        "storyTitle": this.form.get('storyTitle')?.value,
+        "storySummary": this.form.get('storySummary')?.value,
+        "storyDescription": this.form.get('storyDescription')?.value,
+      },
+      "id": this.story.id,
       "storyTags": this.fromDpr ? this.story.storyTags: this.storyTags,
       "storyId": this.story.storyId,
       "storyCreatedDate": this.story.storyCreatedDate,
@@ -169,6 +183,7 @@ export class CreateTopicModalComponent implements OnInit {
       updateObj['dprImageUrl'] = this.dprImageUrl;
       updateObj['dprTags'] = this.dprStoryTags;
     }
+    console.log("updateObj : ", updateObj);
     this.storyService.updateTopics(updateObj);
     this.resetComponentValues();
     this.closeModal();

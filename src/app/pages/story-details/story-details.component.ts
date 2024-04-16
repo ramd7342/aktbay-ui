@@ -29,7 +29,7 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
   public parsedTopicDescription: any = null;
   public contextMenuPosition = { x: '0px', y: '0px' };
   public showMore: boolean = false;
-
+  public s_tags : any = [];
   public loggedInUser: string = "ram7459";
   
   constructor(private modalService: NgbModal,private cdr: ChangeDetectorRef, private sanitized: DomSanitizer, private utils: Utils, private storyService: StoryService, private appData: AppDataService) {}
@@ -55,15 +55,28 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
 
   private getTopicDataDetails ()
   {
-     this.parsedTopicDescription = this.topic?.storyDescription;
-      if ( this.topic?.storyDescription )
+    this.s_tags = this.topic.storyTags.map((st:any) => { return {...st, parsing: false} });
+     this.parsedTopicDescription = this.topic?.content?.storyDescription;
+      if ( this.topic?.content?.storyDescription )
       {
         TAGS.forEach( ( tag: any ) =>
         {
-          this.extractTags( this.topic.storyDescription, tag.tagRegex, tag.category );
+          this.extractTags( this.topic?.content?.storyDescription, tag.tagRegex, tag.category, this.topic?.storyTags );
         } );
       }
+      this.addNonSymbolicTags();
       this.parsedTopicDescription = this.sanitized.bypassSecurityTrustHtml( this.parsedTopicDescription );
+  }
+
+  private addNonSymbolicTags ()
+  {
+    this.s_tags.filter( ( stag: any ) => !stag.parsing ).map( ( nonsymbolictags: any ) =>
+    {
+      var index = this.parsedTopicDescription.indexOf( nonsymbolictags.tagName );
+      var replacement = nonsymbolictags ? `<span style='background-color:#65cbf2'> ${ nonsymbolictags.tagName } </span>` : ``;
+      this.parsedTopicDescription = this.parsedTopicDescription.substring( 0, index ) + replacement + this.parsedTopicDescription.substring( index + nonsymbolictags.tagName.length );
+      this.s_tags.find( ( storyTag: any ) => storyTag.tagName === nonsymbolictags.tagName ).parsing = true;
+    } );
   }
 
   public showAttachmentModal(item:any): void {
@@ -111,7 +124,7 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
   public getTagIcon(category: string) : string{
     let iconClass = "";
     switch(category){
-      case "country": 
+      case "place": 
         iconClass = "bi bi-globe-americas";
         break; 
       case "region":
@@ -136,7 +149,7 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
     return iconClass;
   }
 
-  private extractTags ( storyDescription: any, regex: any, category: any )
+  private extractTags ( storyDescription: any, regex: any, category: any, storyTags: any )
   {
     if ( storyDescription.match( regex ) )
     {
@@ -146,10 +159,13 @@ export class StoryDetailsComponent implements OnInit, OnChanges {
         var index = this.parsedTopicDescription.indexOf(match);
         this.parsedTopicDescription = this.parsedTopicDescription.replace(match, "");
         var tagElement = this.topic.storyTags.find((storyTag: any)=> storyTag.tagName === matchTag);
+        var tagEleIndex = this.topic.storyTags.findIndex((storyTag: any)=> storyTag.tagName === matchTag);
+        this.s_tags[tagEleIndex]["parsing"] = true;
         var replacement = tagElement ? `<span style='background-color:#65cbf2'> ${tagElement.tagName} </span>` : ``;
         this.parsedTopicDescription = this.parsedTopicDescription.substring(0, index) + replacement + this.parsedTopicDescription.substring(index)
       } );
-    }
+    } 
+    //console.log("S_TAGS : ", s_tags);
   }
 
   public approveDpr(topic:any): void {

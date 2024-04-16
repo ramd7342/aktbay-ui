@@ -44,6 +44,7 @@ export class AktbayTopicsViewComponent implements OnInit, OnChanges {
   }
 
   public editTopic(story:any): void {
+    console.log("editTopic :: ",story);
     const modalRef = this.modalService.open(CreateTopicModalComponent, {backdrop: 'static',size: 'lg', windowClass : "myCustomModalClass", centered: true});
     modalRef.componentInstance.story = story;
     modalRef.result.then((result) => {

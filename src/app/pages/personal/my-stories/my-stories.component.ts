@@ -22,7 +22,7 @@ export class MyStoriesComponent {
   {
     this.appData.getLoggedInUser().subscribe((user: string) => {
       this.loggedInUser = user;
-      this.topics$ = this.storyService.getTopics().pipe(
+      this.topics$ = this.storyService.topics.pipe(
         map((topics: any) => topics.filter((topic: any)=> topic.storyCreatedBy === user))
       );
     });
